@@ -1,0 +1,17 @@
+{
+  "name": "LegalDocs Generator",
+  "short_name": "LegalDocs",
+  "description": "Generador de políticas de privacidad y términos para aplicaciones.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

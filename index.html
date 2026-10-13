@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LegalDocs Generator — Generador de Políticas de Privacidad y Términos para Apps</title>
+  <meta name="description" content="Genera borradores estructurados de política de privacidad, términos y condiciones, aviso legal y política de cookies para aplicaciones móviles y web. 100% privado en tu navegador." />
+  <meta name="theme-color" content="#090d16" />
+  <link rel="canonical" href="https://legaldocs.pages.dev/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://legaldocs.pages.dev/" />
+  <meta property="og:title" content="LegalDocs Generator — Documentos Legales para Apps" />
+  <meta property="og:description" content="Genera borradores personalizados de Política de Privacidad y Términos para tus apps móviles y SaaS. Exporta en PDF, HTML y TXT." />
+  <meta property="og:image" content="https://legaldocs.pages.dev/assets/og-image.png" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LegalDocs Generator — Documentos Legales para Apps" />
+  <meta name="twitter:description" content="Genera borradores legales configurables para Google Play, App Store y SaaS. Privado, gratis y sin registro." />
+
+  <!-- Favicon & PWA -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <!-- Fonts: Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Structured Data JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "LegalDocs Generator",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "url": "https://legaldocs.pages.dev",
+    "description": "Herramienta estructurada para generar borradores de políticas de privacidad, términos y condiciones y divulgaciones de seguridad de datos para apps móviles y web.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Global App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="#generator" class="brand-link" aria-label="Inicio LegalDocs Generator">
+        <div class="brand-icon-wrapper" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <span>LegalDocs</span>
+        <span class="brand-badge">v1.0</span>
+      </a>
+
+      <nav class="header-actions" aria-label="Navegación secundaria">
+        <a href="#generator" class="nav-link">Generador</a>
+        <a href="#como-funciona" class="nav-link">Guía</a>
+        <a href="#faq" class="nav-link">Preguntas</a>
+        <button class="icon-button" id="themeToggleBtn" type="button" aria-label="Cambiar modo oscuro o claro" title="Alternar tema">
+          <span id="themeToggleIcon" aria-hidden="true"></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Header -->
+  <header class="hero-banner">
+    <h1>Generador de Políticas de Privacidad y Términos</h1>
+    <p>Crea borradores modulares y precisos adaptados a las funciones reales de tus aplicaciones móviles (Android, iOS), Web y SaaS.</p>
+  </header>
+
+  <!-- Main Wizard Application -->
+  <main class="main-wrapper" id="generator">
+    <!-- Step Sidebar Navigation -->
+    <aside class="wizard-sidebar" aria-label="Pasos del asistente">
+      <div class="wizard-title">
+        <span>Asistente guiado</span>
+        <button class="btn btn-sm btn-ghost" id="clearDataBtn" type="button" title="Eliminar borrador local">Borrar datos</button>
+      </div>
+      <ol class="step-nav-list" id="stepNavList"></ol>
+    </aside>
+
+    <!-- Content Panel & Forms -->
+    <section class="content-panel" aria-live="polite">
+      <div id="stepStatusNotice"></div>
+
+      <header class="step-header">
+        <h2 id="stepTitle">Cargando...</h2>
+        <p id="stepLead">Por favor espera un momento...</p>
+      </header>
+
+      <div id="stepFormContainer"></div>
+
+      <div class="actions-bar">
+        <div>
+          <button class="btn" id="prevStepBtn" type="button">← Atrás</button>
+        </div>
+        <div>
+          <button class="btn btn-primary" id="nextStepBtn" type="button">Siguiente →</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Educational Guide & FAQ -->
+  <section class="educational-section" id="como-funciona">
+    <h2>¿Cómo funciona LegalDocs Generator?</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+      A diferencia de las plantillas genéricas que solo reemplazan el nombre de una empresa, esta herramienta evalúa reglas condicionales: únicamente se agregan cláusulas para las características que realmente existen en tu software (pagos, IA, suscripciones, cuentas, cookies, menores, etc.).
+    </p>
+
+    <div class="grid-two-cols" style="margin-bottom: 2.5rem;">
+      <div style="background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.25rem;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--color-success);">✅ Lo que ofrece esta herramienta</h3>
+        <ul style="padding-left: 1.2rem; color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+          <li>Generación determinista de borradores legales estructurados.</li>
+          <li>Alineación con los cuestionarios de Google Play Data Safety y Apple App Store.</li>
+          <li>Exportación multiformato: PDF profesional, HTML accesible y TXT plano.</li>
+          <li>Privacidad por diseño: todo se ejecuta localmente en tu navegador sin enviar datos a servidores.</li>
+        </ul>
+      </div>
+
+      <div style="background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.25rem;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--color-warning);">⚠️ Lo que NO hace</h3>
+        <ul style="padding-left: 1.2rem; color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+          <li>No constituye asesoramiento jurídico ni sustituye a un abogado colegiado.</li>
+          <li>No garantiza cumplimiento legal universal sin revisión humana previa.</li>
+          <li>No inventa cláusulas ni proveedores ficticios.</li>
+          <li>No implementa el banner técnico de cookies (CMP), el cual debe instalarse en tu código frontend.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ Accordion -->
+    <h2 id="faq">Preguntas frecuentes</h2>
+    <div class="faq-accordion">
+      <details class="faq-item">
+        <summary class="faq-summary">¿Puedo publicar directamente el documento generado en mi aplicación?</summary>
+        <div class="faq-content">
+          <p>Los textos generados son borradores informativos de alta calidad técnica. Antes de publicarlos en producción, debes leerlos detenidamente para confirmar que describen fielmente tu operativa real. Si tu aplicación trata datos biométricos, pagos complejos o está dirigida a menores, se recomienda encarecidamente una revisión por un profesional legal de tu jurisdicción.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-summary">¿Se envían los datos de mi aplicación a algún servidor externo?</summary>
+        <div class="faq-content">
+          <p>No. LegalDocs Generator opera bajo una arquitectura frontend-first estricta. Todo el procesamiento de reglas, concatenación de plantillas y generación del archivo PDF se realiza en la memoria local de tu navegador. Tu información nunca sale de tu dispositivo.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-summary">¿Por qué es obligatoria la política de eliminación de cuentas en Google Play y Apple?</summary>
+        <div class="faq-content">
+          <p>Tanto Google Play como Apple exigen que cualquier aplicación que permita registrar usuarios ofrezca un mecanismo accesible y documentado para solicitar la eliminación permanente de la cuenta y sus datos asociados, tanto dentro de la app como mediante una URL externa.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-summary">¿La política de cookies sustituye al banner de consentimiento?</summary>
+        <div class="faq-content">
+          <p>No. La Política de Cookies es el documento explicativo de transparencia. El banner (o plataforma CMP) es el mecanismo técnico interactivo que bloquea las cookies antes de que el usuario las acepte. Ambos son necesarios si operas en regiones como la Unión Europea.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-summary">¿Puedo editar el documento antes de descargarlo en PDF?</summary>
+        <div class="faq-content">
+          <p>Sí. En el paso final de revisión dispones de un editor completo en tiempo real. Puedes modificar párrafos, añadir cláusulas o ajustar redacciones. El PDF, HTML y TXT descargados contendrán exactamente el texto modificado en el editor.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p><strong>LegalDocs Generator</strong> — Herramienta independiente para la redacción de borradores legales.</p>
+      <p>Aviso: Los documentos generados no constituyen asesoramiento jurídico formal. Consulta a un abogado para evaluar tu caso específico.</p>
+      <p>© <span id="currentYear"></span> LegalDocs Generator. Código abierto bajo licencia MIT.</p>
+    </div>
+  </footer>
+
+  <!-- Global Toast Notification -->
+  <div class="toast-notice" id="globalToast" role="status" aria-live="polite"></div>
+
+  <!-- Main script bundle -->
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

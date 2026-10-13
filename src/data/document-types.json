@@ -1,0 +1,44 @@
+[
+  {
+    "id": "privacy",
+    "label": "Política de Privacidad",
+    "filePrefix": "politica-de-privacidad",
+    "description": "Documento fundamental que detalla qué datos se recopilan, para qué finalidades, bases jurídicas, derechos de los usuarios y destinatarios.",
+    "recommendedFor": "Todas las aplicaciones y sitios web que traten datos personales"
+  },
+  {
+    "id": "terms",
+    "label": "Términos y Condiciones",
+    "filePrefix": "terminos-y-condiciones",
+    "description": "Contrato legal que regula el acceso, uso permitido, conducta, propiedad intelectual, responsabilidades y pagos del servicio.",
+    "recommendedFor": "Cualquier producto digital, SaaS o aplicación interactiva"
+  },
+  {
+    "id": "legal",
+    "label": "Aviso Legal",
+    "filePrefix": "aviso-legal",
+    "description": "Información identificativa del titular exigida por la legislación de comercio electrónico y sociedad de la información (LSSI, etc.).",
+    "recommendedFor": "Sitios web y apps con presencia comercial en España y la Unión Europea"
+  },
+  {
+    "id": "cookies",
+    "label": "Política de Cookies",
+    "filePrefix": "politica-de-cookies",
+    "description": "Explicación detallada de las tecnologías de seguimiento, cookies de análisis, publicitarias o almacenamiento local empleadas.",
+    "recommendedFor": "Aplicaciones y webs que utilicen cookies no técnicas, analytics o publicidad"
+  },
+  {
+    "id": "deletion",
+    "label": "Política de Eliminación de Cuentas y Datos",
+    "filePrefix": "politica-eliminacion-cuentas",
+    "description": "Procedimiento e instrucciones claras para que los usuarios soliciten la baja de su cuenta y la supresión de sus datos personales.",
+    "recommendedFor": "Exigido por Google Play y Apple App Store para aplicaciones con registro"
+  },
+  {
+    "id": "storeDisclosure",
+    "label": "Divulgación para Tiendas de Aplicaciones",
+    "filePrefix": "divulgacion-tiendas",
+    "description": "Ficha resumen de seguridad de datos adaptada para los formularios de App Store y Google Play Data Safety.",
+    "recommendedFor": "Aplicaciones móviles distribuidas a través de Google Play o App Store"
+  }
+]

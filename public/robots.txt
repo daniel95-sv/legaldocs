@@ -1,0 +1,5 @@
+# robots.txt for LegalDocs Generator
+User-agent: *
+Allow: /
+
+Sitemap: https://legaldocs.pages.dev/sitemap.xml
