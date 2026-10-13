@@ -145,6 +145,8 @@ Accede a la aplicación en `http://localhost:8080`.
 ## ☁️ Despliegue en Cloudflare Pages
 
 La aplicación está preparada para su despliegue estático continuo en **Cloudflare Pages**:
+- **URL de producción:** [https://legaldocs-generator.pages.dev](https://legaldocs-generator.pages.dev)
+- **Project name:** `legaldocs-generator`
 - **Framework Preset:** `Vite` o `None`.
 - **Build command:** `npm run build`
 - **Build output directory:** `dist`
