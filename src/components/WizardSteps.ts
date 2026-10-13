@@ -15,6 +15,7 @@ import {
   exportDocumentToTXT,
   exportDocumentToHTML,
 } from "@/services/export/export";
+import { printDocumentContent } from "@/services/print/print-generator";
 import { copyTextToClipboard } from "@/services/clipboard/clipboard";
 import { formatDateSpanish, escapeHtml } from "@/core/template-engine/engine";
 
@@ -1270,7 +1271,7 @@ export const WIZARD_STEPS: StepDefinition[] = [
           const text = editor ? editor.value : (s.generatedDocs[activeResultDoc] || "");
           s.generatedDocs[activeResultDoc] = text;
           update();
-          window.print();
+          printDocumentContent(activeResultDoc, text, s);
         });
 
         // Botón Restaurar borrador original

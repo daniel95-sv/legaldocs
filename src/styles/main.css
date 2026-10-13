@@ -800,13 +800,13 @@ body {
   gap: 0.5rem;
 }
 
-/* Print Styles */
+/* Print Styles Fallback */
 @media print {
   body {
     background: #ffffff !important;
     color: #000000 !important;
   }
-  .app-header, .hero-banner, .wizard-sidebar, .actions-bar, .doc-tabs-nav, .document-toolbar, .alert-banner, .educational-section, .site-footer, .toast-notice {
+  .app-header, .hero-banner, .wizard-sidebar, .actions-bar, .step-header, .doc-tabs-nav, .doc-editor-header, .document-toolbar, .alert-banner, .educational-section, .site-footer, .toast-notice, #generateAllDocsBtn, #genStatusBadge, [style*="Resumen de configuración"] {
     display: none !important;
   }
   .main-wrapper {
@@ -817,13 +817,6 @@ body {
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
-  }
-  .document-editor-area {
-    border: none !important;
-    background: #ffffff !important;
-    color: #000000 !important;
-    font-family: Georgia, serif !important;
-    font-size: 12pt !important;
   }
 }
 
