@@ -1013,7 +1013,35 @@ export const WIZARD_STEPS: StepDefinition[] = [
     isVisible: () => true,
     render: (c, s, update) => {
       const recommendations = evaluateDocumentRules(s);
-      const generatedKeys = Object.keys(s.generatedDocs) as DocumentId[];
+
+      // Si aún no se han generado documentos, generarlos automáticamente para mostrar vista previa de inmediato
+      if (!s.generatedDocs || Object.keys(s.generatedDocs).length === 0) {
+        s.generatedDocs = generateAllDocuments(s);
+        update();
+      }
+
+      const initialKeys = Object.keys(s.generatedDocs) as DocumentId[];
+      if (initialKeys.length > 0 && !initialKeys.includes(activeResultDoc)) {
+        activeResultDoc = initialKeys[0];
+      }
+
+      // Notificaciones Toast
+      const showToastMsg = (msg: string) => {
+        const toast = document.querySelector("#globalToast");
+        if (toast) {
+          toast.textContent = msg;
+          toast.setAttribute("data-active", "true");
+          setTimeout(() => toast.removeAttribute("data-active"), 2600);
+        }
+      };
+
+      // Contador de palabras y caracteres
+      const getDocStatsText = (text: string): string => {
+        const trimmed = text.trim();
+        const words = trimmed ? trimmed.split(/\s+/).length : 0;
+        const chars = text.length;
+        return `${words.toLocaleString()} palabras · ${chars.toLocaleString()} caracteres`;
+      };
 
       c.innerHTML = `
         <!-- Summary cards -->
@@ -1043,117 +1071,284 @@ export const WIZARD_STEPS: StepDefinition[] = [
             : ""
         }
 
-        <!-- Generate button -->
-        <div style="display: flex; gap: 1rem; align-items: center; margin: 1.5rem 0;">
-          <button class="btn btn-primary" id="generateAllDocsBtn" type="button" style="font-size: 1rem; padding: 0.75rem 1.5rem;">
-            ⚡ Generar borradores de documentos
+        <!-- Generate button bar -->
+        <div style="display: flex; gap: 1rem; align-items: center; margin: 1.5rem 0; flex-wrap: wrap;">
+          <button class="btn btn-primary" id="generateAllDocsBtn" type="button" style="font-size: 1rem; padding: 0.75rem 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+            <span>⚡</span> <span id="generateBtnLabel">Generar borradores de documentos</span>
           </button>
           <span style="color: var(--text-muted); font-size: 0.88rem;">Procesamiento 100% privado en tu navegador.</span>
+          <span id="genStatusBadge" style="display: none; align-items: center; gap: 0.35rem; color: #10b981; font-weight: 600; font-size: 0.88rem;"></span>
         </div>
 
         <!-- Results Viewer / Editor -->
-        <div id="resultsContainer">
-          ${
-            generatedKeys.length === 0
-              ? `<p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 1rem;">Pulsa el botón superior para generar los documentos.</p>`
-              : `
-            <div class="doc-tabs-nav" role="tablist">
-              ${generatedKeys
-                .map(
-                  (k) => `
-                <button class="doc-tab-button" role="tab" data-doc-id="${k}" aria-selected="${k === activeResultDoc ? "true" : "false"}">
-                  ${DOC_DISPLAY_NAMES[k] || k}
-                </button>
-              `
-                )
-                .join("")}
-            </div>
-
-            <textarea class="document-editor-area" id="docEditorArea" aria-label="Editor de documento">${escapeHtml(s.generatedDocs[activeResultDoc] || "")}</textarea>
-
-            <div class="document-toolbar">
-              <button class="btn" id="copyDocBtn" type="button">📋 Copiar documento</button>
-              <button class="btn btn-primary" id="downloadPdfBtn" type="button">📄 Descargar PDF</button>
-              <button class="btn" id="downloadTxtBtn" type="button">📝 Descargar TXT</button>
-              <button class="btn" id="downloadHtmlBtn" type="button">🌐 Descargar HTML</button>
-              <button class="btn" id="printDocBtn" type="button">🖨️ Imprimir</button>
-              <button class="btn btn-ghost" id="regenerateDocBtn" type="button">🔄 Restaurar borrador original</button>
-            </div>
-
-            <div class="alert-banner alert-warning" style="margin-top: 1.5rem;">
-              ⚖️ <strong>Aviso legal importante:</strong> Los documentos generados son borradores informativos basados en los datos proporcionados y en plantillas estructuradas. No constituyen asesoramiento jurídico formal ni garantizan el cumplimiento de la legislación aplicable en cada territorio. Antes de publicarlos, comprueba que describen con total veracidad tus prácticas reales y considera obtener asesoramiento profesional cuando corresponda.
-            </div>
-          `
-          }
-        </div>
+        <div id="resultsContainer"></div>
       `;
 
-      // Hook up Generate button
-      c.querySelector("#generateAllDocsBtn")?.addEventListener("click", () => {
-        s.generatedDocs = generateAllDocuments(s);
-        const keys = Object.keys(s.generatedDocs) as DocumentId[];
-        if (keys.length > 0 && !keys.includes(activeResultDoc)) {
-          activeResultDoc = keys[0];
-        }
-        update();
-      });
+      // Renderizador interactivo del visor y editor de documentos
+      const renderResultsArea = () => {
+        const resultsEl = c.querySelector("#resultsContainer");
+        if (!resultsEl) return;
 
-      // Hook up tab switches
-      c.querySelectorAll<HTMLButtonElement>(".doc-tab-button").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          activeResultDoc = btn.getAttribute("data-doc-id") as DocumentId;
+        const generatedKeys = Object.keys(s.generatedDocs) as DocumentId[];
+        if (generatedKeys.length === 0) {
+          resultsEl.innerHTML = `
+            <div style="background-color: var(--bg-surface-elevated); border: 1px dashed var(--border-subtle); border-radius: var(--radius-sm); padding: 2.5rem; text-align: center; margin-top: 1rem;">
+              <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1.25rem;">Pulsa el botón superior para generar los documentos a partir de tus respuestas.</p>
+              <button class="btn btn-primary" id="emptyGenerateBtn" type="button">⚡ Generar borradores ahora</button>
+            </div>
+          `;
+          resultsEl.querySelector("#emptyGenerateBtn")?.addEventListener("click", () => {
+            triggerGeneration();
+          });
+          return;
+        }
+
+        if (!generatedKeys.includes(activeResultDoc)) {
+          activeResultDoc = generatedKeys[0];
+        }
+
+        const currentText = s.generatedDocs[activeResultDoc] || "";
+
+        resultsEl.innerHTML = `
+          <div class="doc-tabs-nav" role="tablist" aria-label="Pestañas de documentos">
+            ${generatedKeys
+              .map(
+                (k) => `
+              <button class="doc-tab-button" role="tab" data-doc-id="${k}" aria-selected="${k === activeResultDoc ? "true" : "false"}" type="button">
+                ${DOC_DISPLAY_NAMES[k] || k}
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+
+          <div class="doc-editor-header">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span id="activeDocTitle" style="font-size: 1.05rem; font-weight: 700; color: var(--text-main);">
+                📄 ${DOC_DISPLAY_NAMES[activeResultDoc] || activeResultDoc}
+              </span>
+              <span style="background: rgba(37,99,235,0.12); color: var(--accent-primary); padding: 0.15rem 0.55rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600;">Borrador editable</span>
+            </div>
+            <div id="docStats" style="font-size: 0.82rem; color: var(--text-muted);">
+              ${getDocStatsText(currentText)}
+            </div>
+          </div>
+
+          <textarea class="document-editor-area" id="docEditorArea" aria-label="Editor de documento">${escapeHtml(currentText)}</textarea>
+          <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.35rem;">💡 Puedes editar o ajustar el texto directamente en el recuadro superior antes de copiar o descargar.</p>
+
+          <div class="document-toolbar">
+            <button class="btn" id="copyDocBtn" type="button">📋 Copiar documento</button>
+            <button class="btn btn-primary" id="downloadPdfBtn" type="button">📄 Descargar PDF</button>
+            <button class="btn" id="downloadTxtBtn" type="button">📝 Descargar TXT</button>
+            <button class="btn" id="downloadHtmlBtn" type="button">🌐 Descargar HTML</button>
+            <button class="btn" id="printDocBtn" type="button">🖨️ Imprimir</button>
+            <button class="btn btn-ghost" id="regenerateDocBtn" type="button">🔄 Restaurar borrador original</button>
+          </div>
+
+          <div class="alert-banner alert-warning" style="margin-top: 1.5rem;">
+            ⚖️ <strong>Aviso legal importante:</strong> Los documentos generados son borradores informativos basados en los datos proporcionados y en plantillas estructuradas. No constituyen asesoramiento jurídico formal ni garantizan el cumplimiento de la legislación aplicable en cada territorio. Antes de publicarlos, comprueba que describen con total veracidad tus prácticas reales y considera obtener asesoramiento profesional cuando corresponda.
+          </div>
+        `;
+
+        // Cambio interactivo e instantáneo de pestañas
+        const tabBtns = resultsEl.querySelectorAll<HTMLButtonElement>(".doc-tab-button");
+        tabBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const docId = btn.getAttribute("data-doc-id") as DocumentId;
+            if (docId === activeResultDoc) return;
+
+            // 1. Guardar cambios del documento actual antes de alternar
+            const editorEl = resultsEl.querySelector<HTMLTextAreaElement>("#docEditorArea");
+            if (editorEl) {
+              s.generatedDocs[activeResultDoc] = editorEl.value;
+            }
+
+            // 2. Cambiar documento activo
+            activeResultDoc = docId;
+
+            // 3. Actualizar estilo visual de las pestañas
+            tabBtns.forEach((b) => {
+              b.setAttribute(
+                "aria-selected",
+                b.getAttribute("data-doc-id") === activeResultDoc ? "true" : "false"
+              );
+            });
+
+            // 4. Actualizar contenido del editor de texto
+            const newText = s.generatedDocs[activeResultDoc] || "";
+            if (editorEl) {
+              editorEl.value = newText;
+            }
+
+            // 5. Actualizar título y estadísticas
+            const titleEl = resultsEl.querySelector("#activeDocTitle");
+            if (titleEl) {
+              titleEl.textContent = `📄 ${DOC_DISPLAY_NAMES[activeResultDoc] || activeResultDoc}`;
+            }
+            const statsEl = resultsEl.querySelector("#docStats");
+            if (statsEl) {
+              statsEl.textContent = getDocStatsText(newText);
+            }
+
+            // 6. Persistir en localStorage
+            update();
+          });
+        });
+
+        // Edición manual en vivo en el área de texto
+        const editor = resultsEl.querySelector<HTMLTextAreaElement>("#docEditorArea");
+        editor?.addEventListener("input", () => {
+          s.generatedDocs[activeResultDoc] = editor.value;
+          const statsEl = resultsEl.querySelector("#docStats");
+          if (statsEl) {
+            statsEl.textContent = getDocStatsText(editor.value);
+          }
           update();
         });
-      });
 
-      // Hook up Editor modifications
-      const editor = c.querySelector<HTMLTextAreaElement>("#docEditorArea");
-      editor?.addEventListener("input", () => {
-        s.generatedDocs[activeResultDoc] = editor.value;
-      });
+        // Botón Copiar documento
+        const copyBtn = resultsEl.querySelector<HTMLButtonElement>("#copyDocBtn");
+        copyBtn?.addEventListener("click", async () => {
+          const text = editor ? editor.value : (s.generatedDocs[activeResultDoc] || "");
+          s.generatedDocs[activeResultDoc] = text;
+          update();
 
-      // Hook up Copy
-      c.querySelector("#copyDocBtn")?.addEventListener("click", async () => {
-        const text = s.generatedDocs[activeResultDoc] || "";
-        const ok = await copyTextToClipboard(text);
-        const toast = document.querySelector("#globalToast");
-        if (toast) {
-          toast.textContent = ok ? "✅ Documento copiado al portapapeles." : "⚠️ No se pudo copiar automáticamente. Selecciona el texto.";
-          toast.setAttribute("data-active", "true");
-          setTimeout(() => toast.removeAttribute("data-active"), 2500);
+          const ok = await copyTextToClipboard(text);
+          if (ok) {
+            copyBtn.textContent = "✓ ¡Copiado!";
+            showToastMsg(`✅ "${DOC_DISPLAY_NAMES[activeResultDoc]}" copiado al portapapeles.`);
+            setTimeout(() => {
+              copyBtn.textContent = "📋 Copiar documento";
+            }, 2000);
+          } else {
+            showToastMsg("⚠️ No se pudo copiar automáticamente. Por favor, selecciona el texto.");
+          }
+        });
+
+        // Botón Descargar PDF
+        const pdfBtn = resultsEl.querySelector<HTMLButtonElement>("#downloadPdfBtn");
+        pdfBtn?.addEventListener("click", async () => {
+          const text = editor ? editor.value : (s.generatedDocs[activeResultDoc] || "");
+          s.generatedDocs[activeResultDoc] = text;
+          update();
+
+          pdfBtn.disabled = true;
+          pdfBtn.innerHTML = `<span class="spin-icon">⏳</span> <span>Generando PDF...</span>`;
+          try {
+            await exportDocumentToPDF(activeResultDoc, text, s);
+            showToastMsg(`✅ PDF de "${DOC_DISPLAY_NAMES[activeResultDoc]}" descargado.`);
+          } catch (err) {
+            console.error("PDF export error:", err);
+            showToastMsg("⚠️ Ocurrió un error al generar el PDF.");
+          } finally {
+            pdfBtn.disabled = false;
+            pdfBtn.innerHTML = "📄 Descargar PDF";
+          }
+        });
+
+        // Botón Descargar TXT
+        resultsEl.querySelector("#downloadTxtBtn")?.addEventListener("click", () => {
+          const text = editor ? editor.value : (s.generatedDocs[activeResultDoc] || "");
+          s.generatedDocs[activeResultDoc] = text;
+          update();
+          exportDocumentToTXT(activeResultDoc, text, s);
+          showToastMsg(`✅ Archivo TXT descargado.`);
+        });
+
+        // Botón Descargar HTML
+        resultsEl.querySelector("#downloadHtmlBtn")?.addEventListener("click", () => {
+          const text = editor ? editor.value : (s.generatedDocs[activeResultDoc] || "");
+          s.generatedDocs[activeResultDoc] = text;
+          update();
+          exportDocumentToHTML(activeResultDoc, text, s);
+          showToastMsg(`✅ Archivo HTML descargado.`);
+        });
+
+        // Botón Imprimir
+        resultsEl.querySelector("#printDocBtn")?.addEventListener("click", () => {
+          const text = editor ? editor.value : (s.generatedDocs[activeResultDoc] || "");
+          s.generatedDocs[activeResultDoc] = text;
+          update();
+          window.print();
+        });
+
+        // Botón Restaurar borrador original
+        resultsEl.querySelector("#regenerateDocBtn")?.addEventListener("click", () => {
+          if (
+            !confirm(
+              `¿Deseas restaurar "${DOC_DISPLAY_NAMES[activeResultDoc]}" con los datos actuales del formulario? Se perderán las modificaciones manuales que hayas escrito en este texto.`
+            )
+          ) {
+            return;
+          }
+          const fresh = generateAllDocuments(s);
+          const restoredText = fresh[activeResultDoc] || "";
+          s.generatedDocs[activeResultDoc] = restoredText;
+          if (editor) {
+            editor.value = restoredText;
+          }
+          const statsEl = resultsEl.querySelector("#docStats");
+          if (statsEl) {
+            statsEl.textContent = getDocStatsText(restoredText);
+          }
+          update();
+          showToastMsg(`✅ Borrador original de "${DOC_DISPLAY_NAMES[activeResultDoc]}" restaurado.`);
+        });
+      };
+
+      // Disparador principal de generación con retroalimentación visual inmediata
+      const triggerGeneration = () => {
+        const btn = c.querySelector<HTMLButtonElement>("#generateAllDocsBtn");
+        const statusBadge = c.querySelector<HTMLElement>("#genStatusBadge");
+
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = `<span class="spin-icon">⚙️</span> <span>Generando documentos...</span>`;
         }
-      });
 
-      // Hook up PDF
-      c.querySelector("#downloadPdfBtn")?.addEventListener("click", async () => {
-        const text = s.generatedDocs[activeResultDoc] || "";
-        await exportDocumentToPDF(activeResultDoc, text, s);
-      });
-
-      // Hook up TXT
-      c.querySelector("#downloadTxtBtn")?.addEventListener("click", () => {
-        const text = s.generatedDocs[activeResultDoc] || "";
-        exportDocumentToTXT(activeResultDoc, text, s);
-      });
-
-      // Hook up HTML
-      c.querySelector("#downloadHtmlBtn")?.addEventListener("click", () => {
-        const text = s.generatedDocs[activeResultDoc] || "";
-        exportDocumentToHTML(activeResultDoc, text, s);
-      });
-
-      // Hook up Print
-      c.querySelector("#printDocBtn")?.addEventListener("click", () => {
-        window.print();
-      });
-
-      // Hook up Regenerate
-      c.querySelector("#regenerateDocBtn")?.addEventListener("click", () => {
-        if (!confirm("¿Deseas regenerar este documento con los datos actuales del formulario? Se perderán las modificaciones manuales que hayas escrito.")) return;
+        // Generación en memoria con todas las respuestas recopiladas
         const freshDocs = generateAllDocuments(s);
-        s.generatedDocs[activeResultDoc] = freshDocs[activeResultDoc];
+        s.generatedDocs = freshDocs;
+
+        const newKeys = Object.keys(freshDocs) as DocumentId[];
+        if (newKeys.length > 0 && !newKeys.includes(activeResultDoc)) {
+          activeResultDoc = newKeys[0];
+        }
+
         update();
+
+        // Breve animación fluida (150ms) para que el usuario perciba la acción con total claridad
+        setTimeout(() => {
+          renderResultsArea();
+
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<span>✅</span> <span>¡Borradores actualizados!</span>`;
+            setTimeout(() => {
+              btn.innerHTML = `<span>⚡</span> <span>Actualizar borradores de documentos</span>`;
+            }, 2500);
+          }
+
+          if (statusBadge) {
+            statusBadge.style.display = "inline-flex";
+            statusBadge.textContent = `✓ ${newKeys.length} documentos listos`;
+            setTimeout(() => {
+              statusBadge.style.display = "none";
+            }, 3500);
+          }
+
+          showToastMsg("✅ Documentos generados y actualizados con éxito según tus respuestas.");
+        }, 150);
+      };
+
+      // Vincular botón principal de generación
+      c.querySelector("#generateAllDocsBtn")?.addEventListener("click", () => {
+        triggerGeneration();
       });
+
+      // Render inicial de la vista de resultados
+      renderResultsArea();
     },
   },
 ];
