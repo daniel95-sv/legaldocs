@@ -72,6 +72,127 @@ export const COOKIES_CATEGORIES: CatalogItem[] = [
   { v: "adIds", label: "Identificadores publicitarios móviles (IDFA / GAID)", hint: "Usados en tiendas de aplicaciones para atribución" },
 ];
 
+export interface PreconfiguredProvider {
+  id: string;
+  name: string;
+  category: string;
+  service: string;
+  data: string;
+  purpose: string;
+  policyUrl: string;
+}
+
+export const PRECONFIGURED_PROVIDERS: PreconfiguredProvider[] = [
+  {
+    id: "google-analytics",
+    name: "Google Analytics (GA4)",
+    category: "Analítica",
+    service: "Medición y análisis estadístico del uso de la app",
+    data: "Identificadores de dispositivo, IP anonimizada, eventos de uso",
+    purpose: "Analizar el rendimiento y la interacción de los usuarios",
+    policyUrl: "https://policies.google.com/privacy",
+  },
+  {
+    id: "stripe",
+    name: "Stripe",
+    category: "Pagos",
+    service: "Pasarela y procesamiento seguro de pagos",
+    data: "Tokens de pago, datos de facturación, correo electrónico",
+    purpose: "Procesar transacciones, compras y cobro de suscripciones",
+    policyUrl: "https://stripe.com/privacy",
+  },
+  {
+    id: "firebase",
+    name: "Google Firebase",
+    category: "Backend / Auth",
+    service: "Autenticación, base de datos y alojamiento backend",
+    data: "Credenciales de usuario, registros de conexión, identificadores",
+    purpose: "Gestionar el inicio de sesión y sincronización en tiempo real",
+    policyUrl: "https://firebase.google.com/support/privacy",
+  },
+  {
+    id: "supabase",
+    name: "Supabase",
+    category: "Backend / Auth",
+    service: "Base de datos PostgreSQL y gestión de autenticación",
+    data: "Correo electrónico, identificador de usuario, registros de sesión",
+    purpose: "Almacenamiento cloud y gestión de cuentas de usuario",
+    policyUrl: "https://supabase.com/privacy",
+  },
+  {
+    id: "admob",
+    name: "Google AdMob",
+    category: "Publicidad",
+    service: "Red de publicidad programática móvil",
+    data: "Identificadores publicitarios (IDFA/GAID), datos de dispositivo",
+    purpose: "Mostrar anuncios personalizados y medición publicitaria",
+    policyUrl: "https://policies.google.com/technologies/ads",
+  },
+  {
+    id: "aws",
+    name: "Amazon Web Services (AWS)",
+    category: "Hosting",
+    service: "Alojamiento en la nube y almacenamiento de archivos (S3)",
+    data: "Archivos de la aplicación, bases de datos, registros de red",
+    purpose: "Infraestructura cloud y almacenamiento seguro de datos",
+    policyUrl: "https://aws.amazon.com/privacy",
+  },
+  {
+    id: "cloudflare",
+    name: "Cloudflare",
+    category: "Seguridad / CDN",
+    service: "Red de distribución de contenidos (CDN) y protección DNS/WAF",
+    data: "Dirección IP, registros de tráfico HTTP, metadatos de conexión",
+    purpose: "Garantizar la velocidad, disponibilidad y defensa contra ataques DDoS",
+    policyUrl: "https://www.cloudflare.com/privacypolicy",
+  },
+  {
+    id: "revenuecat",
+    name: "RevenueCat",
+    category: "Suscripciones",
+    service: "Gestión de compras in-app y suscripciones móviles",
+    data: "ID de usuario anónimo, recibos de compra de App Store / Google Play",
+    purpose: "Validar recibos y gestionar el estado de suscripciones activas",
+    policyUrl: "https://www.revenuecat.com/privacy",
+  },
+  {
+    id: "sentry",
+    name: "Sentry",
+    category: "Monitoreo",
+    service: "Monitorización de rendimiento y reporte de caídas técnicas",
+    data: "Stack traces de errores, versión de la app, modelo de dispositivo",
+    purpose: "Detectar y subsanar fallos de software en tiempo real",
+    policyUrl: "https://sentry.io/privacy",
+  },
+  {
+    id: "openai",
+    name: "OpenAI API",
+    category: "Inteligencia Artificial",
+    service: "Modelos de procesamiento de lenguaje natural y generación de contenido",
+    data: "Prompts del usuario, consultas de texto, metadatos de sesión",
+    purpose: "Procesar y responder peticiones asistidas por IA",
+    policyUrl: "https://openai.com/privacy",
+  },
+  {
+    id: "paypal",
+    name: "PayPal",
+    category: "Pagos",
+    service: "Pasarela de pagos electrónicos",
+    data: "Identificador de transacción, correo, importe",
+    purpose: "Procesamiento de pagos y transferencias seguras",
+    policyUrl: "https://www.paypal.com/webapps/mpp/ua/privacy-full",
+  },
+  {
+    id: "onesignal",
+    name: "OneSignal",
+    category: "Notificaciones",
+    service: "Envío y gestión de notificaciones push",
+    data: "Tokens de notificación del dispositivo, idioma, zona horaria",
+    purpose: "Enviar avisos operativos y comunicaciones importantes a los usuarios",
+    policyUrl: "https://onesignal.com/privacy_policy",
+  },
+];
+
 export const DEFAULT_INITIAL_STATE: LegalDocsState = {
   appName: "",
   appType: "",

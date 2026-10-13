@@ -5,6 +5,7 @@ import {
   PURPOSES,
   SECURITY_MEASURES,
   COOKIES_CATEGORIES,
+  PRECONFIGURED_PROVIDERS,
 } from "@/data/catalogs";
 import { evaluateDocumentRules } from "@/core/document-rules/rules";
 import { generateAllDocuments } from "@/core/document-generator/generator";
@@ -396,80 +397,239 @@ export const WIZARD_STEPS: StepDefinition[] = [
     required: false,
     isVisible: () => true,
     render: (c, s, update) => {
-      c.innerHTML = `
-        <div class="alert-banner alert-info">
-          ℹ️ Añade los proveedores que utiliza tu aplicación. Se integrarán en la sección de destinatarios de la política.
-        </div>
+      const renderContent = () => {
+        const isProviderSelected = (pName: string) =>
+          s.thirdParties.some(
+            (tp) => tp.name.trim().toLowerCase() === pName.trim().toLowerCase()
+          );
 
-        <div id="thirdPartyList">
-          ${
-            s.thirdParties.length === 0
-              ? `<p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem;">No has añadido proveedores externos aún.</p>`
-              : s.thirdParties
-                  .map(
-                    (tp, idx) => `
-            <div class="third-party-row" data-index="${idx}">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <strong style="color: var(--text-main);">${escapeHtml(tp.name || `Proveedor #${idx + 1}`)}</strong>
-                <button class="btn btn-sm btn-danger-ghost remove-tp-btn" data-index="${idx}" type="button">Eliminar</button>
-              </div>
-              <div class="grid-two-cols">
-                <input class="input-text tp-name" type="text" placeholder="Nombre (ej. AWS, Stripe, Google...)" value="${escapeHtml(tp.name)}" />
-                <input class="input-text tp-service" type="text" placeholder="Servicio (ej. Hosting, Pagos...)" value="${escapeHtml(tp.service)}" />
-              </div>
-              <div class="grid-two-cols">
-                <input class="input-text tp-data" type="text" placeholder="Datos recibidos (ej. IP, correo...)" value="${escapeHtml(tp.data)}" />
-                <input class="input-text tp-purpose" type="text" placeholder="Finalidad (ej. Procesar cobros...)" value="${escapeHtml(tp.purpose)}" />
-              </div>
-              <input class="input-text tp-policy" type="url" placeholder="Enlace a su política de privacidad (opcional)" value="${escapeHtml(tp.policyUrl)}" />
+        c.innerHTML = `
+          <div class="alert-banner alert-info" style="margin-bottom: 1.25rem;">
+            <span>ℹ️</span>
+            <div>
+              <strong>Selección rápida o manual:</strong> Haz clic en los proveedores populares para agregarlos con sus datos preconfigurados, o utiliza el botón inferior para ingresar cualquier otro servicio manualmente.
             </div>
-          `
-                  )
-                  .join("")
-          }
-        </div>
+          </div>
 
-        <button class="btn btn-sm" id="addTpBtn" type="button" style="margin-top: 0.5rem;">+ Añadir proveedor externo</button>
-      `;
+          <!-- SECCIÓN: Proveedores Populares -->
+          <div style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.04em;">
+                Proveedores populares (haz clic para añadir)
+              </h3>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">${PRECONFIGURED_PROVIDERS.length} opciones disponibles</span>
+            </div>
 
-      c.querySelector("#addTpBtn")?.addEventListener("click", () => {
-        s.thirdParties.push({
-          id: String(Date.now()),
-          name: "",
-          service: "",
-          data: "",
-          purpose: "",
-          policyUrl: "",
+            <div class="checkbox-card-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.65rem;">
+              ${PRECONFIGURED_PROVIDERS.map((prov) => {
+                const selected = isProviderSelected(prov.name);
+                return `
+                  <button type="button" class="checkbox-card preconfigured-btn" data-prov-id="${prov.id}" style="width: 100%; text-align: left; cursor: pointer; border-color: ${
+                    selected ? "var(--accent-primary)" : "var(--border-subtle)"
+                  }; background-color: ${
+                    selected ? "var(--accent-surface)" : "var(--bg-surface-elevated)"
+                  }; padding: 0.65rem 0.8rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 0.35rem;">
+                      <span style="font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: var(--radius-full); background-color: var(--bg-surface-hover); color: var(--accent-primary);">
+                        ${prov.category}
+                      </span>
+                      <span style="font-size: 0.82rem; font-weight: 700; color: ${
+                        selected ? "var(--color-success)" : "var(--text-muted)"
+                      };">
+                        ${selected ? "✓ Añadido" : "+ Añadir"}
+                      </span>
+                    </div>
+                    <div class="checkbox-card-text">
+                      <span class="checkbox-card-title" style="font-size: 0.88rem;">${prov.name}</span>
+                      <span class="checkbox-card-hint" style="font-size: 0.76rem;">${prov.service}</span>
+                    </div>
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          </div>
+
+          <!-- SECCIÓN: Proveedores Configurados -->
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.04em;">
+                Proveedores en tu política (${s.thirdParties.length})
+              </h3>
+              <button class="btn btn-sm btn-primary" id="addManualTpBtn" type="button">
+                + Añadir proveedor manual
+              </button>
+            </div>
+
+            <div id="configuredProvidersList">
+              ${
+                s.thirdParties.length === 0
+                  ? `
+                  <div style="background-color: var(--bg-surface-elevated); border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); padding: 2rem 1.25rem; text-align: center;">
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem;">
+                      No has añadido proveedores externos aún.
+                    </p>
+                    <p style="color: var(--text-dim); font-size: 0.85rem;">
+                      Selecciona cualquiera de las opciones populares arriba o pulsa "+ Añadir proveedor manual".
+                    </p>
+                  </div>
+                `
+                  : s.thirdParties
+                      .map(
+                        (tp, idx) => `
+                <div class="third-party-row" data-index="${idx}" style="margin-bottom: 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.15rem; background-color: var(--bg-surface-elevated);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.55rem;">
+                      <span style="font-size: 0.75rem; font-weight: 700; background-color: var(--accent-surface); color: var(--accent-primary); border-radius: 50%; width: 22px; height: 22px; display: grid; place-items: center;">
+                        ${idx + 1}
+                      </span>
+                      <strong style="color: var(--text-main); font-size: 0.96rem;">
+                        ${escapeHtml(tp.name || `Proveedor #${idx + 1}`)}
+                      </strong>
+                    </div>
+                    <button class="btn btn-sm btn-danger-ghost remove-tp-btn" data-index="${idx}" type="button" title="Eliminar este proveedor">
+                      ✕ Eliminar
+                    </button>
+                  </div>
+
+                  <div class="grid-two-cols" style="margin-bottom: 0.75rem;">
+                    <div>
+                      <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;">Nombre del proveedor *</label>
+                      <input class="input-text tp-name" type="text" placeholder="Ej: AWS, Stripe, Google..." value="${escapeHtml(tp.name)}" />
+                    </div>
+                    <div>
+                      <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;">Servicio prestado *</label>
+                      <input class="input-text tp-service" type="text" placeholder="Ej: Hosting, Pasarela de pago..." value="${escapeHtml(tp.service)}" />
+                    </div>
+                  </div>
+
+                  <div class="grid-two-cols" style="margin-bottom: 0.75rem;">
+                    <div>
+                      <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;">Datos tratados / recibidos</label>
+                      <input class="input-text tp-data" type="text" placeholder="Ej: IP, correo, tokens de pago..." value="${escapeHtml(tp.data)}" />
+                    </div>
+                    <div>
+                      <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;">Finalidad del tratamiento</label>
+                      <input class="input-text tp-purpose" type="text" placeholder="Ej: Cobro de suscripciones..." value="${escapeHtml(tp.purpose)}" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;">Enlace a su política de privacidad (opcional)</label>
+                    <input class="input-text tp-policy" type="url" placeholder="https://proveedor.com/privacy" value="${escapeHtml(tp.policyUrl)}" />
+                  </div>
+                </div>
+              `
+                      )
+                      .join("")
+              }
+            </div>
+
+            ${
+              s.thirdParties.length > 0
+                ? `
+              <div style="margin-top: 0.75rem;">
+                <button class="btn btn-sm btn-ghost" id="addManualTpBtnBottom" type="button">
+                  + Añadir otro proveedor manual
+                </button>
+              </div>
+            `
+                : ""
+            }
+          </div>
+        `;
+
+        // Preconfigured provider click handlers
+        c.querySelectorAll<HTMLButtonElement>(".preconfigured-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const provId = btn.getAttribute("data-prov-id");
+            const found = PRECONFIGURED_PROVIDERS.find((p) => p.id === provId);
+            if (!found) return;
+
+            const existingIndex = s.thirdParties.findIndex(
+              (tp) => tp.name.trim().toLowerCase() === found.name.trim().toLowerCase()
+            );
+
+            if (existingIndex >= 0) {
+              s.thirdParties.splice(existingIndex, 1);
+            } else {
+              s.thirdParties.push({
+                id: found.id + "-" + Date.now(),
+                name: found.name,
+                service: found.service,
+                data: found.data,
+                purpose: found.purpose,
+                policyUrl: found.policyUrl,
+              });
+            }
+
+            update();
+            renderContent();
+          });
         });
-        update();
-      });
 
-      c.querySelectorAll<HTMLButtonElement>(".remove-tp-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = Number(btn.getAttribute("data-index"));
-          s.thirdParties.splice(idx, 1);
+        // Manual add handler
+        const handleManualAdd = () => {
+          s.thirdParties.push({
+            id: String(Date.now()),
+            name: "",
+            service: "",
+            data: "",
+            purpose: "",
+            policyUrl: "",
+          });
           update();
-        });
-      });
+          renderContent();
 
-      c.querySelectorAll(".third-party-row").forEach((row) => {
-        const idx = Number(row.getAttribute("data-index"));
-        row.querySelector<HTMLInputElement>(".tp-name")?.addEventListener("input", (e) => {
-          s.thirdParties[idx].name = (e.target as HTMLInputElement).value;
+          setTimeout(() => {
+            const nameInputs = c.querySelectorAll<HTMLInputElement>(".tp-name");
+            if (nameInputs.length > 0) {
+              const last = nameInputs[nameInputs.length - 1];
+              last.focus();
+              last.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          }, 40);
+        };
+
+        c.querySelector("#addManualTpBtn")?.addEventListener("click", handleManualAdd);
+        c.querySelector("#addManualTpBtnBottom")?.addEventListener("click", handleManualAdd);
+
+        // Remove handlers
+        c.querySelectorAll<HTMLButtonElement>(".remove-tp-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const idx = Number(btn.getAttribute("data-index"));
+            s.thirdParties.splice(idx, 1);
+            update();
+            renderContent();
+          });
         });
-        row.querySelector<HTMLInputElement>(".tp-service")?.addEventListener("input", (e) => {
-          s.thirdParties[idx].service = (e.target as HTMLInputElement).value;
+
+        // Live input handlers
+        c.querySelectorAll(".third-party-row").forEach((row) => {
+          const idx = Number(row.getAttribute("data-index"));
+          row.querySelector<HTMLInputElement>(".tp-name")?.addEventListener("input", (e) => {
+            s.thirdParties[idx].name = (e.target as HTMLInputElement).value;
+            update();
+          });
+          row.querySelector<HTMLInputElement>(".tp-service")?.addEventListener("input", (e) => {
+            s.thirdParties[idx].service = (e.target as HTMLInputElement).value;
+            update();
+          });
+          row.querySelector<HTMLInputElement>(".tp-data")?.addEventListener("input", (e) => {
+            s.thirdParties[idx].data = (e.target as HTMLInputElement).value;
+            update();
+          });
+          row.querySelector<HTMLInputElement>(".tp-purpose")?.addEventListener("input", (e) => {
+            s.thirdParties[idx].purpose = (e.target as HTMLInputElement).value;
+            update();
+          });
+          row.querySelector<HTMLInputElement>(".tp-policy")?.addEventListener("input", (e) => {
+            s.thirdParties[idx].policyUrl = (e.target as HTMLInputElement).value;
+            update();
+          });
         });
-        row.querySelector<HTMLInputElement>(".tp-data")?.addEventListener("input", (e) => {
-          s.thirdParties[idx].data = (e.target as HTMLInputElement).value;
-        });
-        row.querySelector<HTMLInputElement>(".tp-purpose")?.addEventListener("input", (e) => {
-          s.thirdParties[idx].purpose = (e.target as HTMLInputElement).value;
-        });
-        row.querySelector<HTMLInputElement>(".tp-policy")?.addEventListener("input", (e) => {
-          s.thirdParties[idx].policyUrl = (e.target as HTMLInputElement).value;
-        });
-      });
+      };
+
+      renderContent();
     },
   },
 
