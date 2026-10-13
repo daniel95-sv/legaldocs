@@ -7,6 +7,7 @@ import {
   COOKIES_CATEGORIES,
   PRECONFIGURED_PROVIDERS,
 } from "@/data/catalogs";
+import countriesList from "@/data/countries.json";
 import { evaluateDocumentRules } from "@/core/document-rules/rules";
 import { generateAllDocuments } from "@/core/document-generator/generator";
 import { exportDocumentToPDF } from "@/services/pdf/pdf-generator";
@@ -135,6 +136,10 @@ export const WIZARD_STEPS: StepDefinition[] = [
     required: true,
     isVisible: () => true,
     render: (c, s, update) => {
+      const isKnownCountry = countriesList.includes(s.country) && s.country !== "Otro (especificar manualmente)";
+      const isCustomCountry = Boolean(s.country) && !isKnownCountry;
+      const initialSelectVal = isKnownCountry ? s.country : (s.country ? "Otro (especificar manualmente)" : "");
+
       c.innerHTML = `
         <div class="form-field">
           <label class="field-label">Naturaleza del responsable</label>
@@ -166,9 +171,22 @@ export const WIZARD_STEPS: StepDefinition[] = [
 
         <div class="grid-two-cols">
           <div class="form-field">
-            <label class="field-label" for="country">País del responsable <span class="req-star">*</span></label>
-            <input class="input-text" id="country" type="text" value="${escapeHtml(s.country)}" placeholder="España, México, Argentina..." />
+            <label class="field-label" for="countrySelect">País del responsable <span class="req-star">*</span></label>
+            <select class="input-select" id="countrySelect">
+              <option value="">— Selecciona un país —</option>
+              ${countriesList.map((countryName) => `
+                <option value="${escapeHtml(countryName)}" ${initialSelectVal === countryName ? "selected" : ""}>
+                  ${escapeHtml(countryName)}
+                </option>
+              `).join("")}
+            </select>
+
+            <div id="customCountryWrap" style="margin-top: 0.5rem; ${isCustomCountry || initialSelectVal === "Otro (especificar manualmente)" ? "display: block;" : "display: none;"}">
+              <input class="input-text" id="customCountryInput" type="text" value="${escapeHtml(isCustomCountry ? s.country : "")}" placeholder="Escribe el nombre de tu país..." />
+              <p class="field-hint">Indica el país donde resides o está constituida tu entidad.</p>
+            </div>
           </div>
+
           <div class="form-field">
             <label class="field-label" for="address">Dirección postal / comercial (opcional)</label>
             <input class="input-text" id="address" type="text" value="${escapeHtml(s.address)}" placeholder="Calle, ciudad, código postal..." />
@@ -182,14 +200,36 @@ export const WIZARD_STEPS: StepDefinition[] = [
           update();
         });
       });
+
       c.querySelector<HTMLInputElement>("#respName")?.addEventListener("input", (e) => {
         s.responsibleName = (e.target as HTMLInputElement).value;
         update();
       });
-      c.querySelector<HTMLInputElement>("#country")?.addEventListener("input", (e) => {
+
+      const countrySelect = c.querySelector<HTMLSelectElement>("#countrySelect");
+      const customWrap = c.querySelector<HTMLElement>("#customCountryWrap");
+      const customInput = c.querySelector<HTMLInputElement>("#customCountryInput");
+
+      countrySelect?.addEventListener("change", (e) => {
+        const selected = (e.target as HTMLSelectElement).value;
+        if (selected === "Otro (especificar manualmente)") {
+          if (customWrap) customWrap.style.display = "block";
+          if (customInput) {
+            s.country = customInput.value.trim();
+            customInput.focus();
+          }
+        } else {
+          if (customWrap) customWrap.style.display = "none";
+          s.country = selected;
+        }
+        update();
+      });
+
+      customInput?.addEventListener("input", (e) => {
         s.country = (e.target as HTMLInputElement).value;
         update();
       });
+
       c.querySelector<HTMLInputElement>("#address")?.addEventListener("input", (e) => {
         s.address = (e.target as HTMLInputElement).value;
         update();
