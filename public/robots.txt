@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://legaldocs.pages.dev/sitemap.xml
+Sitemap: https://legaldocs-generator.pages.dev/sitemap.xml
