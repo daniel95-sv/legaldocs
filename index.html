@@ -27,7 +27,11 @@
   <!-- Fonts: Google Fonts Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </noscript>
 
   <!-- Structured Data JSON-LD -->
   <script type="application/ld+json">
@@ -53,7 +57,7 @@
     <div class="header-container">
       <a href="#generator" class="brand-link" aria-label="Inicio LegalDocs Generator">
         <div class="brand-icon-wrapper" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
             <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -69,8 +73,10 @@
         <a href="#generator" class="nav-link">Generador</a>
         <a href="#como-funciona" class="nav-link">Guía</a>
         <a href="#faq" class="nav-link">Preguntas</a>
+        <a href="https://github.com/daniel95-sv/legaldocs" class="nav-link" target="_blank" rel="noopener noreferrer" aria-label="Repositorio oficial en GitHub">GitHub</a>
         <button class="icon-button" id="themeToggleBtn" type="button" aria-label="Cambiar modo oscuro o claro" title="Alternar tema">
           <span id="themeToggleIcon" aria-hidden="true"></span>
+          <span class="sr-only" id="themeToggleText">Cambiar tema visual</span>
         </button>
       </nav>
     </div>
@@ -90,23 +96,95 @@
         <span>Asistente guiado</span>
         <button class="btn btn-sm btn-ghost" id="clearDataBtn" type="button" title="Eliminar borrador local">Borrar datos</button>
       </div>
-      <ol class="step-nav-list" id="stepNavList"></ol>
+      <ol class="step-nav-list" id="stepNavList">
+        <li><button type="button" class="step-btn" aria-current="step"><span class="step-num">1</span><span>Datos de la app</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">2</span><span>Responsable / Titular</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">3</span><span>Jurisdicción</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">4</span><span>Características</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">5</span><span>Datos recopilados</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">6</span><span>Finalidades</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">7</span><span>Terceros y proveedores</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">8</span><span>Conservación y seguridad</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">9</span><span>Transferencias</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">10</span><span>Cookies</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">11</span><span>Documentos</span></button></li>
+        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">12</span><span>Revisión y exportar</span></button></li>
+      </ol>
     </aside>
 
     <!-- Content Panel & Forms -->
-    <section class="content-panel" aria-live="polite">
+    <section class="content-panel" aria-live="polite" aria-labelledby="stepTitle">
       <div id="stepStatusNotice"></div>
 
       <header class="step-header">
-        <h2 id="stepTitle">Cargando...</h2>
-        <p id="stepLead">Por favor espera un momento...</p>
+        <h2 id="stepTitle">Datos de la app</h2>
+        <p id="stepLead">Información general sobre tu producto digital y canales de contacto oficial.</p>
       </header>
 
-      <div id="stepFormContainer"></div>
+      <div id="stepFormContainer">
+        <noscript>
+          <div class="alert-banner alert-warning" style="margin-bottom: 1.5rem;">
+            <span>⚠️</span>
+            <div>
+              <strong>JavaScript requerido:</strong> LegalDocs Generator opera 100% en tu navegador de forma privada sin enviar datos a servidores externos. Para utilizar el generador interactivo y exportar tus documentos (Política de Privacidad, Términos y Condiciones, Aviso Legal, Cookies y Eliminación de Cuentas), por favor activa JavaScript.
+            </div>
+          </div>
+        </noscript>
+        <div class="form-field">
+          <label class="field-label" for="appName">Nombre de la aplicación <span class="req-star">*</span></label>
+          <input class="input-text" id="appName" type="text" placeholder="Ej: TaskFlow, FitTracker..." />
+          <p class="field-hint">El nombre comercial público de tu software o servicio.</p>
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="appType">Tipo de aplicación <span class="req-star">*</span></label>
+          <select class="input-select" id="appType">
+            <option value="">— Selecciona la plataforma principal —</option>
+            <option value="mobile_android">Móvil Android (Google Play)</option>
+            <option value="mobile_ios">Móvil iOS (App Store)</option>
+            <option value="mobile_cross">Móvil multiplataforma (Android e iOS)</option>
+            <option value="web">Aplicación web / Sitio web</option>
+            <option value="saas">SaaS (Software como Servicio)</option>
+            <option value="multiplatform">Multiplataforma integral</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="description">Descripción breve del producto</label>
+          <textarea class="input-textarea" id="description" placeholder="Describe brevemente qué hace tu aplicación y qué valor ofrece a los usuarios..."></textarea>
+        </div>
+
+        <div class="grid-two-cols">
+          <div class="form-field">
+            <label class="field-label" for="url">Sitio web oficial (URL)</label>
+            <input class="input-text" id="url" type="url" placeholder="https://miapp.com" />
+          </div>
+          <div class="form-field">
+            <label class="field-label" for="contactEmail">Correo de contacto / privacidad</label>
+            <input class="input-text" id="contactEmail" type="email" placeholder="privacidad@miapp.com" />
+          </div>
+        </div>
+
+        <div class="grid-two-cols">
+          <div class="form-field">
+            <label class="field-label" for="effectiveDate">Fecha de entrada en vigor <span class="req-star">*</span></label>
+            <input class="input-text" id="effectiveDate" type="date" />
+          </div>
+          <div class="form-field">
+            <label class="field-label" for="audience">Público objetivo</label>
+            <select class="input-select" id="audience">
+              <option value="general" selected>Público general (consumidores)</option>
+              <option value="professionals">Profesionales y empresas (B2B)</option>
+              <option value="minors">Incluye o está dirigida a menores</option>
+              <option value="mixed">Mixto (todos los públicos)</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
       <div class="actions-bar">
         <div>
-          <button class="btn" id="prevStepBtn" type="button">← Atrás</button>
+          <button class="btn" id="prevStepBtn" type="button" disabled>← Atrás</button>
         </div>
         <div>
           <button class="btn btn-primary" id="nextStepBtn" type="button">Siguiente →</button>
@@ -116,17 +194,18 @@
   </main>
 
   <!-- Educational Guide & FAQ -->
-  <section class="educational-section" id="como-funciona">
-    <h2>¿Cómo funciona LegalDocs Generator?</h2>
-    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+  <section class="educational-section" id="como-funciona" aria-labelledby="como-funciona-heading">
+    <h2 id="como-funciona-heading">¿Cómo funciona LegalDocs Generator?</h2>
+    <p style="color: var(--text-main); margin-bottom: 1.5rem;">
       A diferencia de las plantillas genéricas que solo reemplazan el nombre de una empresa, esta herramienta evalúa reglas condicionales: únicamente se agregan cláusulas para las características que realmente existen en tu software (pagos, IA, suscripciones, cuentas, cookies, menores, etc.).
     </p>
 
     <div class="grid-two-cols" style="margin-bottom: 2.5rem;">
       <div style="background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.25rem;">
         <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--color-success);">✅ Lo que ofrece esta herramienta</h3>
-        <ul style="padding-left: 1.2rem; color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+        <ul style="padding-left: 1.2rem; color: var(--text-main); font-size: 0.92rem; line-height: 1.6;">
           <li>Generación determinista de borradores legales estructurados.</li>
+          <li><strong>Marcos normativos base:</strong> Plantillas alineadas con <strong>RGPD / GDPR</strong> (Unión Europea), <strong>CCPA / CPRA</strong> (California) y regulaciones de <strong>Latinoamérica</strong> (LFPDPPP en México, LGPD en Brasil, Colombia, Argentina y otros).</li>
           <li>Alineación con los cuestionarios de Google Play Data Safety y Apple App Store.</li>
           <li>Exportación multiformato: PDF profesional, HTML accesible y TXT plano.</li>
           <li>Privacidad por diseño: todo se ejecuta localmente en tu navegador sin enviar datos a servidores.</li>
@@ -135,7 +214,7 @@
 
       <div style="background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.25rem;">
         <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--color-warning);">⚠️ Lo que NO hace</h3>
-        <ul style="padding-left: 1.2rem; color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+        <ul style="padding-left: 1.2rem; color: var(--text-main); font-size: 0.92rem; line-height: 1.6;">
           <li>No constituye asesoramiento jurídico ni sustituye a un abogado colegiado.</li>
           <li>No garantiza cumplimiento legal universal sin revisión humana previa.</li>
           <li>No inventa cláusulas ni proveedores ficticios.</li>
@@ -189,7 +268,7 @@
     <div class="footer-inner">
       <p><strong>LegalDocs Generator</strong> — Herramienta independiente para la redacción de borradores legales.</p>
       <p>Aviso: Los documentos generados no constituyen asesoramiento jurídico formal. Consulta a un abogado para evaluar tu caso específico.</p>
-      <p>© <span id="currentYear"></span> LegalDocs Generator. Código abierto bajo licencia MIT.</p>
+      <p>© <span id="currentYear"></span> LegalDocs Generator. Código abierto bajo licencia MIT en <a href="https://github.com/daniel95-sv/legaldocs" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>.</p>
     </div>
   </footer>
 

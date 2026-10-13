@@ -1,0 +1,23 @@
+# LegalDocs Generator — Documentación Completa para Modelos de Lenguaje
+
+> Documentación técnica exhaustiva sobre el generador de políticas de privacidad, términos de servicio y fichas de seguridad para aplicaciones móviles y plataformas SaaS.
+
+## Información General del Proyecto
+
+LegalDocs Generator es una suite modular orientada a desarrolladores independientes, startups y equipos de producto para la confección asistida de documentos legales digitales. Opera enteramente en el lado cliente (Web Browser) protegiendo la confidencialidad de la información introducida.
+
+## Documentos Disponibles
+
+1. **Política de Privacidad:** Cláusulas adaptables según jurisdicción (RGPD para Europa, CCPA para California, normativas en Latinoamérica). Cubre categorías de datos, finalidades de tratamiento, destinatarios y medidas de seguridad.
+2. **Términos y Condiciones de Uso:** Reglas de utilización, limitaciones de responsabilidad, propiedad intelectual, condiciones de contratación y jurisdicción competente.
+3. **Aviso Legal:** Información corporativa y mercantil preceptiva para prestadores de servicios de la sociedad de la información (ej. LSSI-CE en España).
+4. **Política de Cookies:** Inventario y divulgación de almacenamiento local, cookies técnicas, analíticas y publicitarias.
+5. **Procedimiento de Eliminación de Cuentas y Datos:** Protocolo documentado exigido por las políticas para desarrolladores de Google Play Console y Apple App Store Connect.
+6. **Divulgación para Tiendas (Data Safety):** Ficha estructurada para completar los formularios de seguridad de datos de las tiendas de aplicaciones.
+
+## Enlaces y Recursos
+
+- [Página Principal y Generador](https://legaldocs-generator.pages.dev/): Aplicación interactiva.
+- [Guía de Uso](https://legaldocs-generator.pages.dev/#como-funciona): Directrices pedagógicas.
+- [Preguntas Frecuentes](https://legaldocs-generator.pages.dev/#faq): Respuestas sobre cumplimiento legal.
+- [Repositorio en GitHub](https://github.com/daniel95-sv/legaldocs): Código fuente abierto.

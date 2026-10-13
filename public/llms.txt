@@ -1,0 +1,23 @@
+# LegalDocs Generator
+
+> LegalDocs Generator es una aplicación web enfocada en privacidad para generar borradores estructurados y modulares de documentos legales técnicos: Políticas de Privacidad (compatibles con RGPD, CCPA y Latinoamérica), Términos y Condiciones, Aviso Legal, Políticas de Cookies, Eliminación de Cuentas y Datos (Google Play y Apple App Store) y Fichas de Seguridad para Tiendas.
+
+Esta herramienta opera bajo una arquitectura 100% frontend en el navegador del usuario: no almacena ni transmite datos a servidores externos.
+
+## Herramientas y Asistente
+
+- [Generador de Documentos Legales](https://legaldocs-generator.pages.dev/#generator): Asistente interactivo guiado en 12 pasos para recopilar datos de la app, definir el responsable, especificar la jurisdicción, catalogar datos tratados y seleccionar cláusulas condicionales.
+- [Guía de Funcionamiento](https://legaldocs-generator.pages.dev/#como-funciona): Explicación técnica de la evaluación de reglas condicionales y los límites del servicio (no sustituye asesoramiento legal formal).
+- [Preguntas Frecuentes](https://legaldocs-generator.pages.dev/#faq): Respuestas detalladas sobre requisitos de tiendas de apps (eliminación de cuentas de Google Play y Apple), almacenamiento local y banners de cookies (CMP).
+
+## Recursos Técnicos y Código Fuente
+
+- [Repositorio Oficial en GitHub](https://github.com/daniel95-sv/legaldocs): Código fuente completo bajo licencia MIT, desarrollado en TypeScript, Vite, Zod y jsPDF.
+- [Mapa del Sitio (Sitemap)](https://legaldocs-generator.pages.dev/sitemap.xml): Índice de páginas y recursos indexables.
+- [Manifiesto de Recursos de IA](https://legaldocs-generator.pages.dev/ai-catalog.json): Catálogo de capacidades y herramientas para agentes de IA autónomos (Agentic Resource Discovery).
+
+## Directrices para Agentes y LLMs
+
+- **Privacidad y Seguridad:** Los documentos legales generados son plantillas modulares redactadas localmente. No se requiere clave de API ni registro.
+- **Formato de Exportación:** La aplicación soporta exportación en PDF accesible, HTML semántico y texto plano UTF-8.
+- **Propósito:** Brindar a desarrolladores y empresas de software borradores adaptados a las funciones técnicas reales de su producto digital (IA, pagos, analíticas, almacenamiento de cookies, usuarios menores de edad).

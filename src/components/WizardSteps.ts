@@ -1078,7 +1078,7 @@ export const WIZARD_STEPS: StepDefinition[] = [
             <span>⚡</span> <span id="generateBtnLabel">Generar borradores de documentos</span>
           </button>
           <span style="color: var(--text-muted); font-size: 0.88rem;">Procesamiento 100% privado en tu navegador.</span>
-          <span id="genStatusBadge" style="display: none; align-items: center; gap: 0.35rem; color: #10b981; font-weight: 600; font-size: 0.88rem;"></span>
+          <span id="genStatusBadge" style="display: none; align-items: center; gap: 0.35rem; color: var(--color-success); font-weight: 600; font-size: 0.88rem;"></span>
         </div>
 
         <!-- Results Viewer / Editor -->
