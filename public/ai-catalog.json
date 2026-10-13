@@ -2,24 +2,31 @@
   "specVersion": "1.0",
   "host": {
     "displayName": "LegalDocs Generator",
-    "identifier": "https://legaldocs-generator.pages.dev",
+    "identifier": "did:web:legaldocs-generator.pages.dev",
     "documentationUrl": "https://legaldocs-generator.pages.dev/#como-funciona",
     "logoUrl": "https://legaldocs-generator.pages.dev/favicon.svg"
   },
   "entries": [
     {
-      "identifier": "legaldocs-generator",
-      "displayName": "LegalDocs Generator",
-      "type": "web-application",
-      "url": "https://legaldocs-generator.pages.dev/#generator",
-      "description": "Herramienta estructurada para redactar y exportar borradores de políticas de privacidad, términos de servicio y fichas de seguridad para Google Play y App Store."
-    },
-    {
-      "identifier": "legaldocs-guide",
-      "displayName": "Guía Técnica y FAQ",
-      "type": "documentation",
-      "url": "https://legaldocs-generator.pages.dev/#como-funciona",
-      "description": "Documentación técnica de evaluación de reglas condicionales, privacidad por diseño y compatibilidad con RGPD y CCPA."
+      "identifier": "urn:air:legaldocs-generator.pages.dev:tool:legal-docs-generator",
+      "displayName": "LegalDocs Generator — Generador de Políticas de Privacidad y Términos",
+      "type": "text/html",
+      "url": "https://legaldocs-generator.pages.dev/",
+      "description": "Herramienta web privada y determinista para redactar, configurar y exportar borradores legales de políticas de privacidad, términos de servicio, aviso legal, cookies y eliminación de cuentas para aplicaciones móviles y SaaS.",
+      "representativeQueries": [
+        "generador de politica de privacidad para app",
+        "crear terminos y condiciones para google play y app store",
+        "politica de eliminacion de cuentas y datos para android",
+        "generador de textos legales saas rgpd ccpa"
+      ],
+      "tags": [
+        "privacy-policy",
+        "terms-of-service",
+        "legal-generator",
+        "gdpr",
+        "ccpa",
+        "developer-tools"
+      ]
     }
   ]
 }
