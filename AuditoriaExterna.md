@@ -1,91 +1,94 @@
-He revisado la estructura, el código renderizado, el contenido y la arquitectura de **LegalDocs Generator** (`[https://legaldocs-generator.pages.dev/](https://legaldocs-generator.pages.dev/)`). En términos generales, es un proyecto muy bien planteado: la propuesta de valor es clara, el enfoque *frontend-first* es ideal para una herramienta de privacidad y el uso de HTML semántico destaca por encima del promedio.
+He vuelto a analizar **LegalDocs Generator** (`[https://legaldocs-generator.pages.dev/](https://legaldocs-generator.pages.dev/)`) tras tu nuevo despliegue. El salto de calidad es notable: aplicaste las correcciones clave de forma muy limpia y el sitio ahora es mucho más sólido tanto en privacidad como en experiencia de usuario.
 
-A continuación te presento una auditoría dividida por áreas clave, con tus **puntos fuertes** y las **oportunidades de mejora más rentables**.
+Aquí tienes el reporte comparativo de lo que ya quedó resuelto y **3 ajustes quirúrgicos** derivados de los nuevos cambios para dejar el código de 10/10.
 
 ---
 
-## 1. Resumen Ejecutivo
+## 1. Cambios verificados (Antes vs. Ahora)
 
-| Área evaluada | Estado actual | Diagnóstico principal |
+| Punto auditado | Estado anterior | Estado actual (Verificado) |
 | --- | --- | --- |
-| **Propuesta de valor y Copy** | Sobresaliente | Explica con total transparencia qué hace, qué marcos cubre (RGPD, CCPA, LATAM, Google Play, App Store) y cuáles son sus límites legales. |
-| **Accesibilidad y Semántica** | Muy bueno | Buen uso de regiones ARIA (`aria-label`, `aria-live="polite"`, `role="status"`) y etiquetas nativas como `<details>` y `<summary>`. |
-| **Rendimiento y Privacidad** | Bueno (con matices) | Despliegue rápido en Cloudflare Pages, pero carga fuentes externas desde servidores de Google, lo que contradice la promesa de "cero conexiones externas". |
-| **UX del Asistente (Wizard)** | Mejorable | Un flujo de 12 pasos entrando directamente al formulario puede generar abandono temprano si el usuario no ve antes el resultado final. |
-| **SEO Técnico** | Bueno | Cuenta con `canonical`, jerarquía `h1`-`h3` limpia y buenas FAQs, pero carece de datos estructurados (`Schema.org`) para destacar en buscadores. |
+| **Privacidad de red (Google Fonts)** | Cargaba fuentes desde `fonts.googleapis.com` y `fonts.gstatic.com`. | **Corregido (10/10):** Eliminadas todas las conexiones a Google Fonts. Ahora cumple al 100% la promesa de cero peticiones a terceros. |
+| **Doble `<header>` en raíz** | Dos etiquetas `<header>` seguidas antes de `<main>`. | **Corregido:** El bloque del `<h1>` pasó a ser `<section aria-label="Presentación del generador">`. |
+| **UX en el Asistente (Wizard)** | 12 pasos planos sin contexto de duración ni guardado. | **Corregido:** Añadido el indicador *"Tiempo estimado: 3 min • Progreso guardado en tu navegador"* y agrupación en **4 bloques lógicos**. |
+| **Footer estático** | `© <span></span>` vacío antes de hidratar JS. | **Corregido:** Ahora renderiza `© <span>2026</span>` directamente en el HTML inicial. |
 
 ---
 
-## 2. Privacidad y Rendimiento (El hallazgo más importante)
+## 2. Nuevos hallazgos técnicos (Detalles finos por pulir)
 
-En tu sección informativa destacas como ventaja competitiva:
+Al revisar el nuevo DOM que generaste con las modificaciones, aparecieron **dos detalles de semántica HTML/Accesibilidad** muy fáciles de corregir:
 
-> *"Privacidad por diseño: todo se ejecuta localmente en tu navegador sin enviar datos a servidores."*
+### A. Los títulos de grupo dentro del `<ol>` alteran el conteo de pasos
 
-Sin embargo, en el `<head>` de la página estás cargando la tipografía **Inter** desde los servidores de Google:
+Para dividir los 12 pasos en 4 fases, insertaste cuatro elementos `<li aria-hidden="true">` dentro de la misma lista ordenada `<ol>`:
 
-* `[https://fonts.googleapis.com](https://fonts.googleapis.com)`
-* `[https://fonts.gstatic.com](https://fonts.gstatic.com)`
+```html
+<ol>
+  <li aria-hidden="true">1. Identidad y Alcance</li>
+  <li>...</li>
+  <li>...</li>
+  <li>...</li>
+  <li aria-hidden="true">2. Datos y Tratamiento</li>
+  ...
+</ol>
 
-### ¿Por qué es un problema?
+```
 
-1. **Coherencia legal (RGPD):** En Europa existen precedentes legales (como la sentencia del Tribunal Regional de Múnich) que sancionan la carga remota de Google Fonts sin consentimiento porque el navegador del visitante transmite automáticamente su dirección IP a los servidores de Google. En una herramienta enfocada en **Políticas de Privacidad y RGPD**, los desarrolladores más técnicos suelen inspeccionar la pestaña *Network* (Red) del navegador.
-2. **Rendimiento:** Aunque usas `preconnect` y carga diferida con `preload`, ahorras resoluciones DNS y apretones de manos TLS si sirves la fuente desde el mismo origen.
+* **Qué ocurre:** En HTML, una lista `<ol>` cuenta todos sus hijos `<li>` directos (16 en total: 4 títulos + 12 pasos). Aunque los títulos tengan `aria-hidden="true"`, muchos navegadores y lectores de pantalla siguen calculando la numeración interna sobre 16 elementos o desfasan el índice de los elementos posteriores.
+* **Cómo solucionarlo sin cambiar tu diseño:**
+En lugar de crear un `<li>` extra para el título del grupo, mantén únicamente los **12 `<li>` reales** y añade un atributo `data-group` al primer paso de cada bloque:
+```html
+<li data-group="1. Identidad y Alcance">
+  <!-- botón del paso 1 -->
+</li>
 
-### Solución recomendada
+```
 
-Descarga los archivos `.woff2` de la fuente **Inter** (o usa `@fontsource/inter`) y alójalos directamente en tu repositorio estático de Cloudflare Pages. Así tu web tendrá **cero peticiones a terceros** reales.
+
+Luego, muéstralo con CSS puro usando `li[data-group]::before { content: attr(data-group); display: block; ... }`. Así el DOM tendrá exactamente 12 ítems en la lista `<ol>` y visualmente se verá idéntico.
+
+### B. El `<h1>` y las secciones informativas quedaron fuera de `<main>`
+
+Con el cambio del segundo `<header>` a `<section>`, el árbol principal de tu `<body>` quedó estructurado así:
+
+1. `<header>` (Barra de navegación)
+2. `<section aria-label="Presentación del generador">` *(Contiene el `<h1>`)*
+3. `<main>` *(Contiene únicamente la cuadrícula del asistente)*
+4. `<section>` *(Contiene "¿Cómo funciona?" y "Preguntas frecuentes")*
+5. `<footer>`
+
+* **Qué ocurre:** Las pautas de accesibilidad (WCAG) y los rastreadores semánticos esperan que el encabezado principal `<h1>` y todo el contenido central de la página estén **dentro** de la etiqueta `<main>`. Ahora mismo el `<h1>` y las FAQs están fuera de la región principal.
+* **Cómo solucionarlo en 30 segundos:**
+Cambia tu etiqueta `<main>` actual (la que tiene el layout de 2 columnas del asistente) por un `<div id="generator" class="...">`, y envuelve todo lo que va desde la sección del `<h1>` hasta el final de las Preguntas Frecuentes dentro de un único `<main>`:
+
+```html
+<header>...</header>
+
+<main>
+  <section aria-label="Presentación del generador">
+    <h1>Generador de Políticas de Privacidad y Términos</h1>
+    ...
+  </section>
+
+  <div id="generator" class="tu-clase-de-grid-actual">
+    <aside aria-label="Pasos del asistente">...</aside>
+    <section aria-live="polite">...</section>
+  </div>
+
+  <section id="como-funciona">...</section>
+</main>
+
+<footer>...</footer>
+
+```
+
+### C. Desplazamiento suave en los enlaces del menú (`scroll-margin-top`)
+
+Como tu barra de navegación superior enlaza a `#generator`, `#como-funciona` y `#faq`, asegúrate de tener en tu CSS una regla `scroll-margin-top: 5rem;` (o la altura de tu navbar más 16px) aplicada a esos tres bloques con `id`. Esto evita que la barra superior tape la primera línea de los títulos `<h2>` cuando el usuario hace clic en **"Guía"** o **"Preguntas"**.
 
 ---
 
-## 3. Estructura HTML y Accesibilidad (a11y)
+## Veredicto general
 
-Se nota un cuidado especial por la accesibilidad (`aria-live="polite"` en el contenedor del formulario y en el nodo de notificaciones, además de `rel="noopener noreferrer"` en enlaces externos). Aun así, hay tres detalles técnicos por pulir:
-
-### A. Doble etiqueta `<header>` en el nivel raíz
-
-Actualmente tienes dos etiquetas `<header>` consecutivas antes de `<main>`:
-
-1. El `<header>` de la barra superior (`LegalDocs v1.0` + `<nav>`).
-2. El `<header>` del bloque principal (`<h1>Generador de Políticas de Privacidad y Términos</h1>`).
-
-* **Impacto:** Los lectores de pantalla anuncian cada `<header>` hijo directo del `<body>` como una región `banner` principal. Tener dos regiones `banner` principales resulta redundante.
-* **Corrección:** Deja únicamente la barra superior dentro de `<header>`, y mueve el bloque del `<h1>` dentro de `<main>` (por ejemplo, como una `<section>` introductoria) o agrupa ambos dentro de un solo `<header>`.
-
-### B. Elementos vacíos antes de la hidratación JavaScript
-
-En el HTML inicial, la lista de pasos del asistente (`<aside aria-label="Pasos del asistente"><ol><li></li>...</ol></aside>`) contiene **12 elementos `<li>` vacíos** que se rellenan por JavaScript, al igual que el año del copyright en el footer (`© <span></span>`).
-
-* **Corrección:** Si usas un generador o bundler (Vite, Astro, etc.), deja el año base escrito en el HTML (ej. `<span>2026</span>`) y renderiza los títulos de los 12 pasos de forma estática en el HTML para que los motores de búsqueda y tecnologías de asistencia los lean desde el primer instante.
-
----
-
-## 4. Experiencia de Usuario (UX) y Conversión
-
-El formulario entra directo a **"Datos de la app"**, acompañado de una barra lateral con **12 pasos**. Para un usuario nuevo, ver una lista de 12 pasos sin saber cuánto tardará o cómo luce el documento final puede generar fricción.
-
-### Mejoras prácticas de UX:
-
-1. **Botón de "Cargar ejemplo de prueba" (1 clic):** Añade en la parte superior del asistente un botón secundario tipo *"Ver ejemplo completo (App con IA y Pagos)"* que rellene el estado con datos de demostración y lleve al usuario directamente a la vista previa del documento. Cuando el desarrollador comprueba que el texto legal generado es de alta calidad, vuelve al Paso 1 motivado para rellenar los 12 pasos con sus datos reales.
-2. **Indicador de tiempo y autoguardado visible:** Añade una micro-nota junto a *"Asistente guiado"* que diga: *"Tiempo estimado: 3 min • Progreso guardado en tu navegador"*. Si aún no guardas el estado en `localStorage`, implementarlo evitará que un usuario pierda todo su trabajo en el paso 10 si refresca la pestaña por error.
-3. **Agrupación visual de los 12 pasos:** En lugar de mostrar 12 ítems planos, puedes agruparlos visualmente en 3 o 4 bloques lógicos (ej. *1. Identidad y Plataforma*, *2. Datos y Permisos*, *3. Terceros y Pagos*, *4. Revisión y Exportación*). Psicológicamente, 4 etapas se perciben mucho más ligeras que 12 pasos sueltos.
-
----
-
-## 5. SEO Técnico y Descubribilidad
-
-El contenido estático inferior (*"¿Cómo funciona LegalDocs Generator?"* y *"Preguntas frecuentes"*) está muy bien redactado e incluye palabras clave de alto valor (**RGPD, GDPR, CCPA, CPRA, LFPDPPP, LGPD, Google Play Data Safety, Apple App Store**).
-
-Para multiplicar tu visibilidad orgánica:
-
-* **Añade Schema.org (`JSON-LD`):** Incluye en el `<head>` un bloque de datos estructurados combinando `WebApplication` (indicando que es una herramienta web gratuita, categoría *DeveloperApplication* / *Legal*) y `FAQPage` con las 5 preguntas frecuentes que ya tienes en la página.
-* **Verifica las etiquetas Open Graph y Twitter Cards:** Asegúrate de contar con una imagen `og:image` personalizada (1200×630 px) que muestre una captura limpia de la interfaz o el logo junto a la frase *"Generador Open Source de Políticas de Privacidad para Apps y SaaS"*. Esto mejora mucho el CTR cuando compartes el enlace en comunidades de desarrolladores (GitHub, Reddit, Discord, X o LinkedIn).
-
----
-
-## 6. Seguridad Frontend (Cloudflare Pages)
-
-Al ser una aplicación alojada en Cloudflare Pages que incluye un editor en tiempo real y exportación a HTML/PDF:
-
-1. **Archivo `_headers` en Cloudflare Pages:** Si aún no lo tienes en tu carpeta `public/`, añade un archivo `_headers` para definir políticas estrictas de seguridad en el navegador (`Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin` y `X-Frame-Options: DENY`). Una `Content-Security-Policy` (CSP) que bloquee conexiones salientes (`connect-src 'none'` o `'self'`) será además una prueba técnica irrefutable para tus usuarios de que tu web no envía sus datos a ningún servidor externo.
-2. **Sanitización en la exportación HTML:** Asegúrate de que los campos introducidos por el usuario en los pasos 1 al 11 se escapen correctamente antes de inyectarse en la plantilla HTML editable, evitando que caracteres especiales como comillas o signos de etiqueta rompan el marcado del documento exportado.
+La página está **lista para producción**. La arquitectura *frontend-first* ahora es verdaderamente privada a nivel de red, el flujo guiado de 4 bloques con tiempo estimado reduce muchísimo la fricción inicial y el código limpio en Cloudflare Pages garantiza tiempos de carga casi instantáneos. Si deseas que revisemos algún paso interno del formulario o la plantilla del documento exportado, dime y lo analizamos en detalle.

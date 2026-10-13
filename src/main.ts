@@ -68,17 +68,14 @@ function renderSidebar(): void {
     const validation = validateStep(s.id, state);
     const isDone = validation.valid && !isCurrent;
 
+    const li = document.createElement("li");
+
     const group = STEP_GROUPS.find((g) => g.stepIds.includes(s.id));
     if (group && group.name !== lastGroupName) {
       lastGroupName = group.name;
-      const groupLi = document.createElement("li");
-      groupLi.className = "step-group-header";
-      groupLi.setAttribute("aria-hidden", "true");
-      groupLi.textContent = group.name;
-      list.appendChild(groupLi);
+      li.setAttribute("data-group", group.name);
     }
 
-    const li = document.createElement("li");
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = `step-btn ${isDone ? "is-complete" : ""}`;

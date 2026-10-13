@@ -124,51 +124,49 @@
     </div>
   </header>
 
-  <!-- Hero Presentation Banner -->
-  <section class="hero-banner" aria-label="Presentación del generador">
-    <h1>Generador de Políticas de Privacidad y Términos</h1>
-    <p>Crea borradores modulares y precisos adaptados a las funciones reales de tus aplicaciones móviles (Android, iOS), Web y SaaS.</p>
-  </section>
+  <!-- Main Document Region -->
+  <main class="site-main">
+    <!-- Hero Presentation Banner -->
+    <section class="hero-banner" aria-label="Presentación del generador">
+      <h1>Generador de Políticas de Privacidad y Términos</h1>
+      <p>Crea borradores modulares y precisos adaptados a las funciones reales de tus aplicaciones móviles (Android, iOS), Web y SaaS.</p>
+    </section>
 
-  <!-- Main Wizard Application -->
-  <main class="main-wrapper" id="generator">
-    <!-- Step Sidebar Navigation -->
-    <aside class="wizard-sidebar" aria-label="Pasos del asistente">
-      <div class="wizard-header-box">
-        <div class="wizard-title">
-          <span>Asistente guiado</span>
-          <button class="btn btn-sm btn-ghost" id="clearDataBtn" type="button" title="Eliminar borrador local">Borrar datos</button>
+    <!-- Main Wizard Application Workspace -->
+    <div class="main-wrapper" id="generator">
+      <!-- Step Sidebar Navigation -->
+      <aside class="wizard-sidebar" aria-label="Pasos del asistente">
+        <div class="wizard-header-box">
+          <div class="wizard-title">
+            <span>Asistente guiado</span>
+            <button class="btn btn-sm btn-ghost" id="clearDataBtn" type="button" title="Eliminar borrador local">Borrar datos</button>
+          </div>
+          <div class="wizard-meta-badge" id="wizardMetaBadge">
+            <span class="save-status-indicator" aria-hidden="true">●</span>
+            <span>Tiempo estimado: 3 min • Progreso guardado en tu navegador</span>
+          </div>
+          <button class="load-demo-btn" id="loadDemoBtn" type="button" title="Cargar un ejemplo completo con IA y Pagos para ver el resultado de inmediato">
+            ⚡ Cargar ejemplo (App con IA y Pagos)
+          </button>
         </div>
-        <div class="wizard-meta-badge" id="wizardMetaBadge">
-          <span class="save-status-indicator" aria-hidden="true">●</span>
-          <span>Tiempo estimado: 3 min • Progreso guardado en tu navegador</span>
-        </div>
-        <button class="load-demo-btn" id="loadDemoBtn" type="button" title="Cargar un ejemplo completo con IA y Pagos para ver el resultado de inmediato">
-          ⚡ Cargar ejemplo (App con IA y Pagos)
-        </button>
-      </div>
-      <ol class="step-nav-list" id="stepNavList">
-        <li class="step-group-header" aria-hidden="true">1. Identidad y Alcance</li>
-        <li><button type="button" class="step-btn" aria-current="step"><span class="step-num">1</span><span>Datos de la app</span></button></li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">2</span><span>Responsable / Titular</span></button></li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">3</span><span>Jurisdicción</span></button></li>
+        <ol class="step-nav-list" id="stepNavList">
+          <li data-group="1. Identidad y Alcance"><button type="button" class="step-btn" aria-current="step"><span class="step-num">1</span><span>Datos de la app</span></button></li>
+          <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">2</span><span>Responsable / Titular</span></button></li>
+          <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">3</span><span>Jurisdicción</span></button></li>
 
-        <li class="step-group-header" aria-hidden="true">2. Datos y Tratamiento</li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">4</span><span>Características</span></button></li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">5</span><span>Datos recopilados</span></button></li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">6</span><span>Finalidades</span></button></li>
+          <li data-group="2. Datos y Tratamiento"><button type="button" class="step-btn" aria-current="false"><span class="step-num">4</span><span>Características</span></button></li>
+          <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">5</span><span>Datos recopilados</span></button></li>
+          <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">6</span><span>Finalidades</span></button></li>
 
-        <li class="step-group-header" aria-hidden="true">3. Terceros y Seguridad</li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">7</span><span>Terceros y proveedores</span></button></li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">8</span><span>Conservación y seguridad</span></button></li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">9</span><span>Transferencias</span></button></li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">10</span><span>Cookies</span></button></li>
+          <li data-group="3. Terceros y Seguridad"><button type="button" class="step-btn" aria-current="false"><span class="step-num">7</span><span>Terceros y proveedores</span></button></li>
+          <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">8</span><span>Conservación y seguridad</span></button></li>
+          <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">9</span><span>Transferencias</span></button></li>
+          <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">10</span><span>Cookies</span></button></li>
 
-        <li class="step-group-header" aria-hidden="true">4. Documentos y Salida</li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">11</span><span>Documentos</span></button></li>
-        <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">12</span><span>Revisión y exportar</span></button></li>
-      </ol>
-    </aside>
+          <li data-group="4. Documentos y Salida"><button type="button" class="step-btn" aria-current="false"><span class="step-num">11</span><span>Documentos</span></button></li>
+          <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">12</span><span>Revisión y exportar</span></button></li>
+        </ol>
+      </aside>
 
     <!-- Content Panel & Forms -->
     <section class="content-panel" aria-live="polite" aria-labelledby="stepTitle">
@@ -249,7 +247,7 @@
         </div>
       </div>
     </section>
-  </main>
+  </div>
 
   <!-- Educational Guide & FAQ -->
   <section class="educational-section" id="como-funciona" aria-labelledby="como-funciona-heading">
@@ -320,6 +318,7 @@
       </details>
     </div>
   </section>
+</main>
 
   <!-- Site Footer -->
   <footer class="site-footer">
