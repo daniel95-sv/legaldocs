@@ -284,3 +284,153 @@ export const DEFAULT_INITIAL_STATE: LegalDocsState = {
 
   generatedDocs: {},
 };
+
+export const DEMO_INITIAL_STATE: LegalDocsState = {
+  appName: "NovaAI Studio",
+  appType: "saas",
+  description: "Plataforma SaaS de productividad y análisis automatizado de documentos con asistencia de inteligencia artificial generativa, gestión de suscripciones y facturación.",
+  url: "https://nova-ai.example.com",
+  contactEmail: "privacidad@nova-ai.example.com",
+  effectiveDate: new Date().toISOString().slice(0, 10),
+  language: "es",
+  audience: "general",
+
+  responsibleType: "company",
+  responsibleName: "Nova Digital Innovations S.L.",
+  country: "España",
+  address: "Paseo de la Castellana 180, 28046 Madrid, España",
+
+  juris: {
+    gdpr: true,
+    ccpa: true,
+    latam: true,
+    other: "",
+  },
+
+  features: {
+    accounts: true,
+    oauth: true,
+    profiles: true,
+    ugc: true,
+    comments: false,
+    payments: true,
+    subscriptions: true,
+    ads: false,
+    analytics: true,
+    ai: true,
+    location: false,
+    uploads: true,
+    social: false,
+    minors: false,
+    accountDeletion: true,
+  },
+
+  dataCategories: [
+    "name",
+    "email",
+    "username",
+    "ip",
+    "usage",
+    "logs",
+    "cookies",
+    "payment_provider",
+    "files",
+    "user_content",
+    "auto",
+  ],
+  purposes: [
+    "accounts",
+    "functionality",
+    "payments",
+    "subscriptions",
+    "support",
+    "operational",
+    "security",
+    "fraud",
+    "analytics",
+    "improve",
+    "legal",
+  ],
+  thirdParties: [
+    {
+      id: "stripe",
+      name: "Stripe Payments Europe, Ltd.",
+      service: "Pasarela y procesamiento seguro de suscripciones",
+      data: "Tokens de pago, información de facturación, correo electrónico",
+      purpose: "Procesar transacciones comerciales y renovaciones periódicas",
+      policyUrl: "https://stripe.com/privacy",
+    },
+    {
+      id: "openai",
+      name: "OpenAI, LLC",
+      service: "API de procesamiento de lenguaje natural y modelos generativos",
+      data: "Prompts de texto y consultas proporcionadas voluntariamente",
+      purpose: "Ejecutar las funcionalidades de generación y resumen asistido",
+      policyUrl: "https://openai.com/privacy",
+    },
+    {
+      id: "supabase",
+      name: "Supabase Inc.",
+      service: "Infraestructura cloud y gestión de sesiones",
+      data: "Identificadores de usuario, hash de contraseñas, registros técnicos",
+      purpose: "Alojamiento de cuentas y autenticación segura",
+      policyUrl: "https://supabase.com/privacy",
+    },
+    {
+      id: "cloudflare",
+      name: "Cloudflare, Inc.",
+      service: "Red de distribución de contenidos, DNS y protección DDoS",
+      data: "Dirección IP, cabeceras HTTP de petición",
+      purpose: "Garantizar disponibilidad técnica y mitigar ataques cibernéticos",
+      policyUrl: "https://www.cloudflare.com/privacypolicy/",
+    },
+  ],
+
+  retentionPeriod: "Durante la vigencia de la cuenta de usuario y hasta 5 años tras la baja contractual por obligaciones fiscales y de prevención de blanqueo.",
+  retentionCriteria: "Los datos se suprimen o anonimizan periódicamente una vez expirados los plazos legales de prescripción aplicables.",
+  autoDeletion: false,
+  legalRetention: true,
+  backupsInfo: "Las copias de seguridad de la infraestructura se conservan cifradas y se rotan cada 30 días.",
+  security: ["tls", "at_rest", "access", "backups", "monitoring", "incidents", "account_protection"],
+
+  transfers: {
+    international: true,
+    mechanisms: "Cláusulas Contractuales Tipo (SCC) aprobadas por la Comisión Europea y Marco de Privacidad de Datos UE-EE.UU. (Data Privacy Framework).",
+  },
+
+  cookies: {
+    necessary: true,
+    analytics: true,
+    advertising: false,
+    localStorage: true,
+    adIds: false,
+  },
+
+  ai: {
+    functions: "Análisis y generación de borradores de texto mediante modelos de lenguaje natural.",
+    dataSent: "Consultas de texto introducidas explícitamente por el usuario para su procesamiento.",
+    stored: "Los datos se procesan en tránsito y no se conservan permanentemente por el proveedor más allá de la ventana técnica de seguridad de 30 días.",
+    training: "Garantizamos mediante acuerdo API empresarial que los datos del usuario NO se utilizan para reentrenar ni ajustar modelos fundacionales.",
+    personalData: true,
+    automated: false,
+  },
+
+  minors: {
+    minAge: "16",
+    parental: false,
+    specialContact: "",
+  },
+
+  docs: {
+    privacy: true,
+    terms: true,
+    legal: true,
+    cookies: true,
+    deletion: true,
+    storeDisclosure: true,
+    storeDisclosureExtra: "Incluye integración de suscripciones Stripe y API OpenAI sin entrenamiento sobre datos privados.",
+  },
+
+  generatedDocs: {},
+};
+

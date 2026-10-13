@@ -1,3 +1,9 @@
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/inter/latin-800.css";
+
 /* =====================================================================
    LegalDocs Generator — Global Design System & Variables
    Modern, Accessible, WCAG 2.2 AA compliant, Dark & Light Mode
@@ -273,16 +279,84 @@ body {
   }
 }
 
+.wizard-header-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1.15rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
 .wizard-title {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-dim);
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.wizard-meta-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  background-color: var(--bg-surface-elevated);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  line-height: 1.35;
+}
+
+.save-status-indicator {
+  color: var(--color-success);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.load-demo-btn {
+  width: 100%;
+  font-size: 0.8rem;
+  padding: 0.45rem 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: var(--accent-surface);
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 35%, transparent);
+  color: var(--text-main);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.load-demo-btn:hover {
+  background-color: color-mix(in srgb, var(--accent-primary) 22%, transparent);
+  border-color: var(--accent-primary);
+}
+
+.step-group-header {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  padding: 0.65rem 0.5rem 0.25rem 0.5rem;
+  margin-top: 0.35rem;
+  border-top: 1px solid color-mix(in srgb, var(--border-subtle) 60%, transparent);
+  user-select: none;
+}
+
+.step-group-header:first-of-type {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0.1rem;
 }
 
 .step-nav-list {

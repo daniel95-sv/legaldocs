@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <radialGradient id="glow1" cx="10%" cy="10%" r="50%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#090d16" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glow2" cx="90%" cy="80%" r="50%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#090d16" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="100" cy="100" r="400" fill="url(#glow1)" />
+  <circle cx="1050" cy="500" r="400" fill="url(#glow2)" />
+
+  <rect x="40" y="40" width="1120" height="550" rx="20" fill="#111827" fill-opacity="0.75" stroke="#243044" stroke-width="2" />
+
+  <!-- Badge -->
+  <rect x="90" y="90" width="360" height="42" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="1" />
+  <circle cx="112" cy="111" r="5" fill="#34d399" />
+  <text x="130" y="117" font-family="-apple-system, Inter, Roboto, sans-serif" font-size="16" font-weight="600" fill="#cbd5e1">100% Client-Side • Sin servidores</text>
+
+  <!-- Title -->
+  <text x="90" y="210" font-family="-apple-system, Inter, Roboto, sans-serif" font-size="52" font-weight="800" fill="#f8fafc">LegalDocs Generator</text>
+
+  <!-- Tagline -->
+  <text x="90" y="270" font-family="-apple-system, Inter, Roboto, sans-serif" font-size="28" font-weight="700" fill="#3b82f6">Generador Open Source de Políticas de Privacidad</text>
+  <text x="90" y="310" font-family="-apple-system, Inter, Roboto, sans-serif" font-size="28" font-weight="600" fill="#e2e8f0">y Términos Legales para Apps y SaaS</text>
+
+  <!-- Badges -->
+  <g transform="translate(90, 360)">
+    <rect x="0" y="0" width="180" height="42" rx="8" fill="#1e293b" stroke="#374761" />
+    <text x="16" y="26" font-family="sans-serif" font-size="16" fill="#f8fafc">🛡️ RGPD / GDPR</text>
+
+    <rect x="200" y="0" width="180" height="42" rx="8" fill="#1e293b" stroke="#374761" />
+    <text x="216" y="26" font-family="sans-serif" font-size="16" fill="#f8fafc">⚖️ CCPA / CPRA</text>
+
+    <rect x="400" y="0" width="230" height="42" rx="8" fill="#1e293b" stroke="#374761" />
+    <text x="416" y="26" font-family="sans-serif" font-size="16" fill="#f8fafc">🌎 LATAM (LFPDPPP)</text>
+
+    <rect x="650" y="0" width="250" height="42" rx="8" fill="#1e293b" stroke="#374761" />
+    <text x="666" y="26" font-family="sans-serif" font-size="16" fill="#f8fafc">📱 Google Play &amp; Apple</text>
+  </g>
+
+  <!-- Divider -->
+  <line x1="90" y1="460" x2="1110" y2="460" stroke="#243044" stroke-width="1" />
+
+  <!-- Footer -->
+  <text x="90" y="505" font-family="-apple-system, Inter, Roboto, sans-serif" font-size="18" fill="#94a3b8">Exporta en PDF profesional, HTML accesible y TXT plano • Licencia MIT</text>
+  <text x="890" y="505" font-family="-apple-system, Inter, Roboto, sans-serif" font-size="18" font-weight="600" fill="#3b82f6">legaldocs-generator.pages.dev</text>
+</svg>

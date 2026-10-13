@@ -19,35 +19,77 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="LegalDocs Generator — Documentos Legales para Apps" />
   <meta name="twitter:description" content="Genera borradores legales configurables para Google Play, App Store y SaaS. Privado, gratis y sin registro." />
+  <meta name="twitter:image" content="https://legaldocs-generator.pages.dev/assets/og-image.png" />
+  <meta name="twitter:image:alt" content="LegalDocs Generator — Generador Open Source de Políticas de Privacidad y Términos" />
 
   <!-- Favicon & PWA -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="manifest" href="/manifest.webmanifest" />
 
-  <!-- Fonts: Google Fonts Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <noscript>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  </noscript>
-
-  <!-- Structured Data JSON-LD -->
+  <!-- Structured Data JSON-LD (WebApplication + FAQPage) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "LegalDocs Generator",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Any",
-    "url": "https://legaldocs-generator.pages.dev",
-    "description": "Herramienta estructurada para generar borradores de políticas de privacidad, términos y condiciones y divulgaciones de seguridad de datos para apps móviles y web.",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "LegalDocs Generator",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any",
+        "url": "https://legaldocs-generator.pages.dev/",
+        "description": "Herramienta estructurada para generar borradores de políticas de privacidad, términos y condiciones y divulgaciones de seguridad de datos para apps móviles y web.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Puedo publicar directamente el documento generado en mi aplicación?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Los textos generados son borradores informativos de alta calidad técnica. Antes de publicarlos en producción, debes leerlos detenidamente para confirmar que describen fielmente tu operativa real. Si tu aplicación trata datos biométricos, pagos complejos o está dirigida a menores, se recomienda encarecidamente una revisión por un profesional legal de tu jurisdicción."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Se envían los datos de mi aplicación a algún servidor externo?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. LegalDocs Generator opera bajo una arquitectura frontend-first estricta. Todo el procesamiento de reglas, concatenación de plantillas y generación del archivo PDF se realiza en la memoria local de tu navegador. Tu información nunca sale de tu dispositivo."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Por qué es obligatoria la política de eliminación de cuentas en Google Play y Apple?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Tanto Google Play como Apple exigen que cualquier aplicación que permita registrar usuarios ofrezca un mecanismo accesible y documentado para solicitar la eliminación permanente de la cuenta y sus datos asociados, tanto dentro de la app como mediante una URL externa."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿La política de cookies sustituye al banner de consentimiento?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. La Política de Cookies es el documento explicativo de transparencia. El banner (o plataforma CMP) es el mecanismo técnico interactivo que bloquea las cookies antes de que el usuario las acepte. Ambos son necesarios si operas en regiones como la Unión Europea."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Puedo editar el documento antes de descargarlo en PDF?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sí. En el paso final de revisión dispones de un editor completo en tiempo real. Puedes modificar párrafos, añadir cláusulas o ajustar redacciones. El PDF, HTML y TXT descargados contendrán exactamente el texto modificado en el editor."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
 </head>
@@ -82,31 +124,47 @@
     </div>
   </header>
 
-  <!-- Hero Header -->
-  <header class="hero-banner">
+  <!-- Hero Presentation Banner -->
+  <section class="hero-banner" aria-label="Presentación del generador">
     <h1>Generador de Políticas de Privacidad y Términos</h1>
     <p>Crea borradores modulares y precisos adaptados a las funciones reales de tus aplicaciones móviles (Android, iOS), Web y SaaS.</p>
-  </header>
+  </section>
 
   <!-- Main Wizard Application -->
   <main class="main-wrapper" id="generator">
     <!-- Step Sidebar Navigation -->
     <aside class="wizard-sidebar" aria-label="Pasos del asistente">
-      <div class="wizard-title">
-        <span>Asistente guiado</span>
-        <button class="btn btn-sm btn-ghost" id="clearDataBtn" type="button" title="Eliminar borrador local">Borrar datos</button>
+      <div class="wizard-header-box">
+        <div class="wizard-title">
+          <span>Asistente guiado</span>
+          <button class="btn btn-sm btn-ghost" id="clearDataBtn" type="button" title="Eliminar borrador local">Borrar datos</button>
+        </div>
+        <div class="wizard-meta-badge" id="wizardMetaBadge">
+          <span class="save-status-indicator" aria-hidden="true">●</span>
+          <span>Tiempo estimado: 3 min • Progreso guardado en tu navegador</span>
+        </div>
+        <button class="load-demo-btn" id="loadDemoBtn" type="button" title="Cargar un ejemplo completo con IA y Pagos para ver el resultado de inmediato">
+          ⚡ Cargar ejemplo (App con IA y Pagos)
+        </button>
       </div>
       <ol class="step-nav-list" id="stepNavList">
+        <li class="step-group-header" aria-hidden="true">1. Identidad y Alcance</li>
         <li><button type="button" class="step-btn" aria-current="step"><span class="step-num">1</span><span>Datos de la app</span></button></li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">2</span><span>Responsable / Titular</span></button></li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">3</span><span>Jurisdicción</span></button></li>
+
+        <li class="step-group-header" aria-hidden="true">2. Datos y Tratamiento</li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">4</span><span>Características</span></button></li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">5</span><span>Datos recopilados</span></button></li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">6</span><span>Finalidades</span></button></li>
+
+        <li class="step-group-header" aria-hidden="true">3. Terceros y Seguridad</li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">7</span><span>Terceros y proveedores</span></button></li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">8</span><span>Conservación y seguridad</span></button></li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">9</span><span>Transferencias</span></button></li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">10</span><span>Cookies</span></button></li>
+
+        <li class="step-group-header" aria-hidden="true">4. Documentos y Salida</li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">11</span><span>Documentos</span></button></li>
         <li><button type="button" class="step-btn" aria-current="false"><span class="step-num">12</span><span>Revisión y exportar</span></button></li>
       </ol>
@@ -268,7 +326,7 @@
     <div class="footer-inner">
       <p><strong>LegalDocs Generator</strong> — Herramienta independiente para la redacción de borradores legales.</p>
       <p>Aviso: Los documentos generados no constituyen asesoramiento jurídico formal. Consulta a un abogado para evaluar tu caso específico.</p>
-      <p>© <span id="currentYear"></span> LegalDocs Generator. Código abierto bajo licencia MIT en <a href="https://github.com/daniel95-sv/legaldocs" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>.</p>
+      <p>© <span id="currentYear">2026</span> LegalDocs Generator. Código abierto bajo licencia MIT en <a href="https://github.com/daniel95-sv/legaldocs" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>.</p>
     </div>
   </footer>
 

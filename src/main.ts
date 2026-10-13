@@ -7,6 +7,8 @@ import {
 } from "@/services/storage/storage";
 import { validateStep } from "@/core/validation/schemas";
 import { WIZARD_STEPS } from "@/components/WizardSteps";
+import { DEMO_INITIAL_STATE } from "@/data/catalogs";
+import { generateAllDocuments } from "@/core/document-generator/generator";
 
 let state: LegalDocsState = loadStateFromLocalStorage();
 let currentStepIndex = 0;
@@ -42,6 +44,13 @@ function updateThemeIcon(theme: string): void {
       : `<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 }
 
+const STEP_GROUPS: { name: string; stepIds: string[] }[] = [
+  { name: "1. Identidad y Alcance", stepIds: ["app", "responsible", "jurisdiction"] },
+  { name: "2. Datos y Tratamiento", stepIds: ["features", "data", "purposes"] },
+  { name: "3. Terceros y Seguridad", stepIds: ["thirdParties", "security", "transfers", "cookies"] },
+  { name: "4. Documentos y Salida", stepIds: ["documents", "review"] },
+];
+
 function getVisibleSteps(): typeof WIZARD_STEPS {
   return WIZARD_STEPS.filter((s) => s.isVisible(state));
 }
@@ -52,11 +61,22 @@ function renderSidebar(): void {
 
   const visible = getVisibleSteps();
   list.innerHTML = "";
+  let lastGroupName = "";
 
   visible.forEach((s, idx) => {
     const isCurrent = idx === currentStepIndex;
     const validation = validateStep(s.id, state);
     const isDone = validation.valid && !isCurrent;
+
+    const group = STEP_GROUPS.find((g) => g.stepIds.includes(s.id));
+    if (group && group.name !== lastGroupName) {
+      lastGroupName = group.name;
+      const groupLi = document.createElement("li");
+      groupLi.className = "step-group-header";
+      groupLi.setAttribute("aria-hidden", "true");
+      groupLi.textContent = group.name;
+      list.appendChild(groupLi);
+    }
 
     const li = document.createElement("li");
     const btn = document.createElement("button");
@@ -184,6 +204,20 @@ function initApp(): void {
     currentStepIndex = 0;
     renderCurrentStep();
     showToast("Datos locales eliminados correctamente.");
+  });
+
+  document.querySelector("#loadDemoBtn")?.addEventListener("click", () => {
+    state = {
+      ...DEMO_INITIAL_STATE,
+      effectiveDate: new Date().toISOString().slice(0, 10),
+    };
+    state.generatedDocs = generateAllDocuments(state);
+    saveStateToLocalStorage(state);
+    const visible = getVisibleSteps();
+    const reviewIdx = visible.findIndex((s) => s.id === "review");
+    currentStepIndex = reviewIdx >= 0 ? reviewIdx : visible.length - 1;
+    renderCurrentStep();
+    showToast("⚡ Ejemplo completo cargado con éxito. Puedes revisar los documentos generados o volver al Paso 1.");
   });
 
   // Dynamic copyright year
