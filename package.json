@@ -4,6 +4,11 @@
   "private": true,
   "type": "module",
   "description": "Generador estructurado y modular de políticas de privacidad, términos y condiciones y documentos legales para aplicaciones.",
+  "homepage": "https://legaldocs.pages.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daniel95-sv/legaldocs.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
